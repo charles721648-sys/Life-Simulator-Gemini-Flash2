@@ -1,0 +1,2063 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>現代地球人生分支模擬器 | 80億分之一的超寫實投胎</title>
+    <!-- 載入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 載入 Google Fonts: Noto Sans TC & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Inter"', '"Noto Sans TC"', 'sans-serif'],
+                    },
+                    animation: {
+                        'slide-up': 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'pop-in': 'popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
+                        'float-up': 'floatUp 1.2s ease-out forwards',
+                    },
+                    keyframes: {
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(16px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        popIn: {
+                            '0%': { opacity: '0', transform: 'scale(0.95) translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'scale(1) translateY(0)' },
+                        },
+                        floatUp: {
+                            '0%': { opacity: '1', transform: 'translateY(0) scale(1)' },
+                            '100%': { opacity: '0', transform: 'translateY(-22px) scale(1.1)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
+        }
+        .glass-header {
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+        }
+        .card-shadow {
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.06), 0 1px 3px 0 rgba(0, 0, 0, 0.04);
+        }
+        .dark .card-shadow {
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.35), 0 1px 3px 0 rgba(0, 0, 0, 0.25);
+        }
+        .choice-btn {
+            transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .choice-btn:active:not(:disabled) {
+            transform: scale(0.985);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-900 dark:bg-zinc-950 dark:text-zinc-100 min-h-screen flex flex-col items-center justify-between antialiased transition-colors duration-200 selection:bg-blue-500 selection:text-white">
+
+    <!-- ==================== 1. 開始與投胎選擇畫面 ==================== -->
+    <div id="start-screen" class="w-full max-w-2xl min-h-screen flex flex-col justify-between p-5 sm:p-8 mx-auto">
+        <header class="pt-2 flex items-center justify-between">
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 text-xs font-bold text-gray-600 dark:text-zinc-300 shadow-xs">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                地球人口：約 82 億人 • 超寫實生存測試
+            </div>
+            <!-- 深淺色主題切換 -->
+            <button onclick="toggleTheme()" class="p-2 rounded-xl bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 text-gray-600 dark:text-zinc-300 hover:bg-gray-50 dark:hover:bg-zinc-800 transition-colors cursor-pointer" title="切換深色/淺色模式">
+                <span id="theme-icon">🌙</span>
+            </button>
+        </header>
+
+        <main class="my-auto py-6">
+            <div class="mb-5 inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gray-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-3xl shadow-lg">
+                👶
+            </div>
+            <h1 class="text-3xl sm:text-5xl font-black tracking-tight leading-[1.15] mb-3">
+                現代地球<br>人生分支模擬器
+            </h1>
+            <p class="text-sm sm:text-base text-gray-600 dark:text-zinc-400 leading-relaxed mb-6">
+                投胎是技術活，但你沒得挑。不同出生背景自帶完全不同的<span class="font-bold text-gray-900 dark:text-white underline decoration-blue-500 decoration-2 underline-offset-4">初始天賦與地獄難題</span>——有人一出生就抽中健保護體，有人還沒長大就要擔心家裡斷炊；再加上隨時可能砸頭上的突發意外，你這輩子能活到幾歲、混成什麼樣子？
+            </p>
+
+            <!-- 主要開始按鈕：隨機投胎 -->
+            <button onclick="startLife(null)" class="w-full py-4 px-6 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-lg shadow-xl shadow-blue-600/20 transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-3 cursor-pointer mb-6">
+                <span>🎲 聽天由命！依真實世界比例隨機投胎</span>
+            </button>
+
+            <!-- 自選身分測試區 -->
+            <div class="bg-white dark:bg-zinc-900 rounded-3xl p-4 sm:p-5 border border-gray-200 dark:border-zinc-800 card-shadow">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-xs font-extrabold uppercase tracking-wider text-gray-500 dark:text-zinc-400">或自選出生身分體驗不同人生劇本（共 8 種）</span>
+                </div>
+                <div id="origin-selector-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    <!-- 由 JS 動態生成 8 種出生背景卡片 -->
+                </div>
+            </div>
+        </main>
+
+        <footer class="py-3 text-center text-xs text-gray-400 dark:text-zinc-600">
+            警告：內含高房價、老闆畫大餅、詐騙集團與突發疾病，玻璃心請小心服用。
+        </footer>
+    </div>
+
+    <!-- ==================== 2. 遊戲主畫面 ==================== -->
+    <div id="game-screen" class="hidden w-full max-w-2xl min-h-screen flex flex-col mx-auto relative">
+        
+        <!-- 頂部固定屬性儀表板 -->
+        <header class="sticky top-0 z-30 glass-header bg-white/90 dark:bg-zinc-950/90 border-b border-gray-200/80 dark:border-zinc-800/80 px-4 py-3 sm:px-6 transition-colors">
+            <!-- 第一排：年齡、出生地、功能鍵 -->
+            <div class="flex items-center justify-between mb-2.5">
+                <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="bg-gray-900 dark:bg-zinc-100 text-white dark:text-zinc-900 px-3 py-1 rounded-xl font-black text-base sm:text-lg tracking-tight shrink-0 flex items-baseline gap-1">
+                        <span id="ui-age">0</span>
+                        <span class="text-xs font-normal opacity-75">歲</span>
+                    </div>
+                    <div class="min-w-0">
+                        <div class="flex items-center gap-1.5">
+                            <span id="ui-region-flag" class="text-base shrink-0">🇹🇼</span>
+                            <span id="ui-region-name" class="font-bold text-sm truncate">載入中...</span>
+                        </div>
+                        <div id="ui-active-tags" class="flex flex-wrap gap-1 mt-0.5">
+                            <!-- 動態顯示目前的身分標籤與狀態標籤 -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-1.5 shrink-0">
+                    <button onclick="toggleTheme()" class="p-2 rounded-xl text-gray-500 dark:text-zinc-400 hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors text-sm cursor-pointer" title="切換主題">
+                        <span id="theme-icon-game">🌙</span>
+                    </button>
+                    <button onclick="confirmRestart()" class="px-2.5 py-1.5 rounded-xl bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700 text-gray-700 dark:text-zinc-300 text-xs font-bold transition-colors cursor-pointer">
+                        重開
+                    </button>
+                </div>
+            </div>
+
+            <!-- 第二排：四維屬性條 -->
+            <div class="grid grid-cols-4 gap-2">
+                <!-- 身體健康 -->
+                <div class="relative bg-gray-50 dark:bg-zinc-900 p-2 rounded-xl border border-gray-200/70 dark:border-zinc-800">
+                    <div class="flex items-center justify-between text-[11px] sm:text-xs mb-1">
+                        <span class="text-gray-500 dark:text-zinc-400 font-bold">❤️ 健康</span>
+                        <span id="stat-health-val" class="font-black">50</span>
+                    </div>
+                    <div class="w-full h-1.5 bg-gray-200 dark:bg-zinc-800 rounded-full overflow-hidden">
+                        <div id="stat-health-bar" class="h-full bg-rose-500 transition-all duration-500 rounded-full" style="width: 50%"></div>
+                    </div>
+                    <div id="delta-health" class="absolute -top-2 right-1 text-xs font-black pointer-events-none"></div>
+                </div>
+
+                <!-- 手頭現金 -->
+                <div class="relative bg-gray-50 dark:bg-zinc-900 p-2 rounded-xl border border-gray-200/70 dark:border-zinc-800">
+                    <div class="flex items-center justify-between text-[11px] sm:text-xs mb-1">
+                        <span class="text-gray-500 dark:text-zinc-400 font-bold">💰 現金</span>
+                        <span id="stat-cash-val" class="font-black">50</span>
+                    </div>
+                    <div class="w-full h-1.5 bg-gray-200 dark:bg-zinc-800 rounded-full overflow-hidden">
+                        <div id="stat-cash-bar" class="h-full bg-amber-500 transition-all duration-500 rounded-full" style="width: 50%"></div>
+                    </div>
+                    <div id="delta-cash" class="absolute -top-2 right-1 text-xs font-black pointer-events-none"></div>
+                </div>
+
+                <!-- 腦袋與技能 -->
+                <div class="relative bg-gray-50 dark:bg-zinc-900 p-2 rounded-xl border border-gray-200/70 dark:border-zinc-800">
+                    <div class="flex items-center justify-between text-[11px] sm:text-xs mb-1">
+                        <span class="text-gray-500 dark:text-zinc-400 font-bold">🧠 技能</span>
+                        <span id="stat-skill-val" class="font-black">50</span>
+                    </div>
+                    <div class="w-full h-1.5 bg-gray-200 dark:bg-zinc-800 rounded-full overflow-hidden">
+                        <div id="stat-skill-bar" class="h-full bg-indigo-500 transition-all duration-500 rounded-full" style="width: 50%"></div>
+                    </div>
+                    <div id="delta-skill" class="absolute -top-2 right-1 text-xs font-black pointer-events-none"></div>
+                </div>
+
+                <!-- 人脈與運氣 -->
+                <div class="relative bg-gray-50 dark:bg-zinc-900 p-2 rounded-xl border border-gray-200/70 dark:border-zinc-800">
+                    <div class="flex items-center justify-between text-[11px] sm:text-xs mb-1">
+                        <span class="text-gray-500 dark:text-zinc-400 font-bold">🍀 運氣</span>
+                        <span id="stat-luck-val" class="font-black">50</span>
+                    </div>
+                    <div class="w-full h-1.5 bg-gray-200 dark:bg-zinc-800 rounded-full overflow-hidden">
+                        <div id="stat-luck-bar" class="h-full bg-emerald-500 transition-all duration-500 rounded-full" style="width: 50%"></div>
+                    </div>
+                    <div id="delta-luck" class="absolute -top-2 right-1 text-xs font-black pointer-events-none"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- 中央時間軸事件流 -->
+        <main id="timeline-container" class="flex-1 px-4 sm:px-6 pt-5 pb-16 space-y-4">
+            <!-- 動態事件卡片與問題互動區 -->
+        </main>
+
+        <!-- 自定義重開確認視窗 -->
+        <div id="restart-modal" class="hidden fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+            <div class="bg-white dark:bg-zinc-900 rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-gray-200 dark:border-zinc-800 animate-pop-in">
+                <h3 class="text-lg font-black mb-2">這輩子玩膩了，要直接重開嗎？</h3>
+                <p class="text-sm text-gray-600 dark:text-zinc-400 mb-6">現在放棄的話，這條人生線就直接結束，帶你回到投胎大廳重新選擇喔。</p>
+                <div class="flex gap-3">
+                    <button onclick="closeRestartModal()" class="flex-1 py-3 rounded-xl bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700 font-bold text-sm transition-colors cursor-pointer">再撐一下</button>
+                    <button onclick="executeRestart()" class="flex-1 py-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-sm transition-colors cursor-pointer">立刻投胎</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 3. 人生結算成績單畫面 ==================== -->
+    <div id="summary-screen" class="hidden w-full max-w-2xl min-h-screen p-4 sm:p-8 mx-auto flex flex-col justify-between">
+        <div class="bg-white dark:bg-zinc-900 rounded-3xl border border-gray-200 dark:border-zinc-800 card-shadow overflow-hidden animate-slide-up">
+            <!-- 頂部成績單橫幅 -->
+            <div class="bg-gray-900 dark:bg-zinc-950 text-white p-6 sm:p-8 relative overflow-hidden border-b border-zinc-800">
+                <div class="absolute -right-4 -top-4 text-8xl opacity-10 select-none">🧾</div>
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-xs font-bold text-gray-200 mb-3">
+                    <span>地球人生結算成績單</span>
+                    <span>•</span>
+                    <span id="sum-id">#EARTH-0000</span>
+                </div>
+                <h2 class="text-2xl sm:text-4xl font-black tracking-tight mb-2" id="sum-headline">享年 78 歲</h2>
+                <p class="text-sm sm:text-base text-gray-300 font-medium" id="sum-origin-line">🇹🇼 台灣雙薪小康家庭</p>
+            </div>
+
+            <div class="p-6 sm:p-8 space-y-6">
+                <!-- 結局與死因 -->
+                <div class="p-4 rounded-2xl bg-gray-50 dark:bg-zinc-800/70 border border-gray-200/80 dark:border-zinc-700/80">
+                    <div class="text-xs font-extrabold text-rose-600 dark:text-rose-400 uppercase tracking-wider mb-1">💀 人生登出原因</div>
+                    <p id="sum-death-reason" class="text-sm sm:text-base font-bold leading-relaxed">
+                        載入中...
+                    </p>
+                </div>
+
+                <!-- 頒發的人生稱號徽章 -->
+                <div>
+                    <div class="text-xs font-extrabold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2.5">🏆 這輩子獲得的稱號徽章</div>
+                    <div id="sum-badges" class="flex flex-wrap gap-2">
+                        <!-- 由 JS 動態生成稱號徽章 -->
+                    </div>
+                </div>
+
+                <!-- 白話人生故事總結 -->
+                <div>
+                    <div class="text-xs font-extrabold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2">📖 一生白話回顧</div>
+                    <p id="sum-story" class="text-sm sm:text-[15px] text-gray-700 dark:text-zinc-300 leading-relaxed bg-blue-50/50 dark:bg-blue-950/20 p-4 rounded-2xl border border-blue-100 dark:border-blue-900/40">
+                        <!-- 由 JS 動態組合 -->
+                    </p>
+                </div>
+
+                <!-- 最終四維數值總覽 -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                    <div class="p-3 rounded-2xl bg-gray-50 dark:bg-zinc-800/60 border border-gray-200/60 dark:border-zinc-700/60 text-center">
+                        <div class="text-xs text-gray-500 dark:text-zinc-400 mb-1">❤️ 身體健康</div>
+                        <div id="sum-stat-health" class="text-xl font-black">0</div>
+                    </div>
+                    <div class="p-3 rounded-2xl bg-gray-50 dark:bg-zinc-800/60 border border-gray-200/60 dark:border-zinc-700/60 text-center">
+                        <div class="text-xs text-gray-500 dark:text-zinc-400 mb-1">💰 手頭現金</div>
+                        <div id="sum-stat-cash" class="text-xl font-black">0</div>
+                    </div>
+                    <div class="p-3 rounded-2xl bg-gray-50 dark:bg-zinc-800/60 border border-gray-200/60 dark:border-zinc-700/60 text-center">
+                        <div class="text-xs text-gray-500 dark:text-zinc-400 mb-1">🧠 腦袋技能</div>
+                        <div id="sum-stat-skill" class="text-xl font-black">0</div>
+                    </div>
+                    <div class="p-3 rounded-2xl bg-gray-50 dark:bg-zinc-800/60 border border-gray-200/60 dark:border-zinc-700/60 text-center">
+                        <div class="text-xs text-gray-500 dark:text-zinc-400 mb-1">🍀 人脈運氣</div>
+                        <div id="sum-stat-luck" class="text-xl font-black">0</div>
+                    </div>
+                </div>
+
+                <!-- 關鍵經歷時間軸簡表 -->
+                <div>
+                    <div class="text-xs font-extrabold text-gray-400 dark:text-zinc-500 uppercase tracking-wider mb-2.5">📌 關鍵轉折與重大意外紀錄</div>
+                    <ul id="sum-logs" class="space-y-2 text-xs sm:text-sm text-gray-600 dark:text-zinc-400 border-l-2 border-gray-200 dark:border-zinc-700 pl-3.5">
+                        <!-- 由 JS 填入 -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部操作按鈕 -->
+        <div class="mt-5 flex flex-col sm:flex-row gap-3 pb-6">
+            <button onclick="copyResultSummary()" class="flex-1 py-4 px-5 rounded-2xl bg-white dark:bg-zinc-900 hover:bg-gray-50 dark:hover:bg-zinc-800 border border-gray-300 dark:border-zinc-700 font-bold text-sm shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer">
+                <span>📋 複製這輩子戰績分享</span>
+            </button>
+            <button onclick="returnToLobby()" class="flex-1 py-4 px-5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-sm shadow-lg shadow-blue-600/20 transition-all flex items-center justify-center gap-2 cursor-pointer">
+                <span>🔄 立刻重新投胎</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 輕量提示 Toast -->
+    <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-gray-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-xs font-bold px-4 py-2.5 rounded-full shadow-xl opacity-0 pointer-events-none transition-opacity duration-300">
+        已複製！
+    </div>
+
+    <!-- ==================== 核心遊戲邏輯與龐大劇本庫 ==================== -->
+    <script>
+        /**
+         * 1. 8 種現代地球典型出生嬰兒身分 (含初始數值、機率權重、專屬天賦/詛咒標籤)
+         */
+        const ORIGINS = [
+            {
+                id: 'taiwan_middle',
+                name: '台灣雙薪小康家庭',
+                flag: '🇹🇼',
+                weight: 8,
+                probText: '抽中機率 8%',
+                stats: { health: 68, cash: 55, skill: 62, luck: 52 },
+                traits: [
+                    { text: '🛡️ 健保護體', type: 'buff' },
+                    { text: '🏠 房價地獄', type: 'debuff' }
+                ],
+                desc: '你出生在台灣六都的電梯大樓裡，爸媽都是朝九晚五的上班族。這輩子有全球最強的健保罩著，半夜兩點下樓就有超商可以買宵夜，但也注定從小要面對補習班與長大後買不起房的現實。'
+            },
+            {
+                id: 'east_asia_involution',
+                name: '東亞一線城市內捲家庭',
+                flag: '🇰🇷',
+                weight: 18,
+                probText: '抽中機率 18%',
+                stats: { health: 55, cash: 58, skill: 72, luck: 42 },
+                traits: [
+                    { text: '📚 升學內捲詛咒', type: 'debuff' },
+                    { text: '⚡ 超強抗壓性', type: 'buff' }
+                ],
+                desc: '你出生在東亞超級大都市（首爾/上海/東京邊緣）。還沒學會講話，爸媽就已經幫你規劃好補習班與名校路線。這裡治安好、基礎建設頂尖，但從小到大都在跟幾百萬個同齡人瘋狂搶獨木橋。'
+            },
+            {
+                id: 'south_asia_slum',
+                name: '南亞大都市貧民窟',
+                flag: '🇮🇳',
+                weight: 24,
+                probText: '抽中機率 24%（全球最大宗）',
+                stats: { health: 32, cash: 15, skill: 35, luck: 45 },
+                traits: [
+                    { text: '🔥 蟑螂級生存韌性', type: 'buff' },
+                    { text: '⚠️ 資源極度匱乏', type: 'debuff' }
+                ],
+                desc: '你出生在南亞人口爆炸的大都市邊緣鐵皮屋裡。夏天熱到像烤箱、雨季會淹水，飲用水也不太乾淨。家裡連下一頓飯都要精打細算，但這裡的人只要有一絲機會就會拼命往上爬！'
+            },
+            {
+                id: 'sub_saharan_rural',
+                name: '撒哈拉以南農村大家庭',
+                flag: '🇳🇬',
+                weight: 18,
+                probText: '抽中機率 18%',
+                stats: { health: 38, cash: 18, skill: 28, luck: 48 },
+                traits: [
+                    { text: '💪 天生神力體能', type: 'buff' },
+                    { text: '💧 基礎建設缺口', type: 'debuff' }
+                ],
+                desc: '你出生在非洲紅土高原的熱鬧村落，家裡有六個兄弟姊妹。每天要走好幾公里去提水或上學，停電是日常，瘧疾與乾旱隨時可能來襲，但整個村子的人都像家人一樣互相照應。'
+            },
+            {
+                id: 'sea_emerging',
+                name: '東南亞快速起飛新興中產',
+                flag: '🇻🇳',
+                weight: 13,
+                probText: '抽中機率 13%',
+                stats: { health: 52, cash: 42, skill: 48, luck: 58 },
+                traits: [
+                    { text: '🚀 經濟起飛紅利', type: 'buff' },
+                    { text: '👨‍👩‍👧‍👦 家族人情重擔', type: 'debuff' }
+                ],
+                desc: '你出生在充滿機車喇叭聲與經濟活力的東南亞新興城市。到處都在蓋新大樓、外資工廠一間間開，只要敢衝就有很多草根賺錢機會，但一旦賺了錢，整個大家族的親戚都會來找你幫忙。'
+            },
+            {
+                id: 'latam_urban',
+                name: '拉丁美洲大都市基層家庭',
+                flag: '🇧🇷',
+                weight: 9,
+                probText: '抽中機率 9%',
+                stats: { health: 48, cash: 28, skill: 42, luck: 62 },
+                traits: [
+                    { text: '🎉 樂天街頭智慧', type: 'buff' },
+                    { text: '💸 惡性通膨與治安', type: 'debuff' }
+                ],
+                desc: '你出生在熱情奔放但貧富差距超大的拉美大都市山坡社區。這裡物價每年都在狂飆、走在路上要隨時注意搶劫，但週末的足球賽、烤肉與音樂派對永遠能讓大家忘掉所有煩惱。'
+            },
+            {
+                id: 'north_america_tech',
+                name: '北美科技新貴家庭',
+                flag: '🇺🇸',
+                weight: 6,
+                probText: '抽中機率 6%',
+                stats: { health: 70, cash: 82, skill: 70, luck: 58 },
+                traits: [
+                    { text: '💎 頂級教育資源', type: 'buff' },
+                    { text: '🏥 天價醫療與學貸', type: 'debuff' }
+                ],
+                desc: '你出生在美國加州陽光普照的獨棟大房子裡，爸媽在大型科技公司上班。你從小接觸最新科技與自由教育，站在全球資本最前線，但長大後一旦沒了公司保險，叫一次救護車就能讓你破產。'
+            },
+            {
+                id: 'nordic_welfare',
+                name: '北歐高福利國家中產',
+                flag: '🇸🇪',
+                weight: 4,
+                probText: '抽中機率 4%（SSR 開局）',
+                stats: { health: 80, cash: 72, skill: 65, luck: 65 },
+                traits: [
+                    { text: '👑 從搖籃到墳墓全包', type: 'buff' },
+                    { text: '❄️ 酷寒冬夜與高稅率', type: 'debuff' }
+                ],
+                desc: '恭喜抽中地球頂級投胎券！你出生在北歐，念大學免費還倒貼生活費、看病幾乎不用錢、下班時間一到準時走人。唯一的煩惱是冬天一天只有四小時陽光，很容易憂鬱，而且賺太多一半都要繳稅。'
+            }
+        ];
+
+        /**
+         * 2. 時間軸年齡節點 (共 15 個關鍵階段，每 3~5 歲一跳)
+         */
+        const AGE_TIMELINE = [3, 6, 10, 14, 18, 22, 26, 30, 35, 40, 45, 52, 60, 68, 76, 84];
+
+        /**
+         * 3. 遊戲全域狀態
+         */
+        let state = {
+            origin: null,
+            ageStepIndex: -1,
+            age: 0,
+            stats: { health: 50, cash: 50, skill: 50, luck: 50 },
+            flags: new Set(),        // 劇情分支標記（例如：'abroad'海外線, 'debt'負債線, 'entrepreneur'創業線, 'health_crisis'病痛線, 'married'已婚, 'kid'有小孩）
+            logs: [],                // 關鍵事件與選擇紀錄
+            badges: new Set(),       // 結算稱號徽章
+            isDead: false,
+            deathReason: '',
+            questionCount: 0,
+            accidentCount: 0
+        };
+
+        /**
+         * 4. 龐大題庫系統：包含「出生身分專屬問題」與「通用人生階段問題」
+         * 每題提供 4~5 個極致白話選項，具備屬性門檻、分支標記連動與風險提示
+         */
+        function getQuestionForAge(age) {
+            // 優先檢查是否觸發【出生身分專屬難題】或【前置劇情分支後續題】
+            const originId = state.origin.id;
+
+            // --- 出生身分專屬挑戰與抉擇 ---
+            if (age === 14 && (originId === 'south_asia_slum' || originId === 'sub_saharan_rural')) {
+                return {
+                    badge: '⚠️ 出生身分專屬考驗',
+                    badgeColor: 'bg-amber-600 text-white',
+                    title: '家裡突然斷炊了，你的學費沒著落！',
+                    text: '今年收成不好加上物價暴漲，爸媽看著空蕩蕩的米缸發愁，暗示你這個年紀已經可以出去賺錢貼補家用了。14 歲的你怎麼辦？',
+                    choices: [
+                        {
+                            label: '🛑 忍痛輟學去工廠/工地打黑工，先讓家人吃飽再說',
+                            hint: '現金 +18，健康 -12，技能 -8（提早進入社會底層磨練）',
+                            effect: { cash: 18, health: -12, skill: -8 },
+                            addFlag: 'child_labor',
+                            badge: '早熟扛家計',
+                            result: '你每天頂著烈日搬磚頭、做手工，雙手長滿厚繭。雖然沒書讀了，但你成功撐起了這個家。'
+                        },
+                        {
+                            label: '📖 白天打工、晚上借路燈和二手課本拼死自學',
+                            hint: '技能 +15，健康 -15，運氣 +5（極度考驗體力）',
+                            effect: { skill: 15, health: -15, luck: 5 },
+                            result: '你每天只睡四小時，累到好幾次差點暈倒，但全村人都知道你是個狠角色。'
+                        },
+                        {
+                            label: '🏃 跑去大城市車站或觀光區混街頭、幫遊客帶路賺小費',
+                            hint: '運氣 +14，現金 +12，健康 -5（學會察言觀色）',
+                            effect: { luck: 14, cash: 12, health: -5 },
+                            addFlag: 'street_smart',
+                            badge: '街頭生存王',
+                            result: '你學會了三句英文和五種推銷話術，在混亂的車站裡練就了一身閃避小偷與拉客的本領。'
+                        },
+                        {
+                            label: '🙏 去找當地的慈善組織或免費教會學校哭求資助',
+                            hint: '需運氣 ≥ 45｜保留讀書機會，現金 +5',
+                            req: { stat: 'luck', min: 45 },
+                            effect: { skill: 12, cash: 5, luck: 5 },
+                            result: '你的真誠打動了志工老師，他們不僅免了你的學費，還每天多發一顆水煮蛋給你！'
+                        }
+                    ]
+                };
+            }
+
+            if (age === 18 && (originId === 'taiwan_middle' || originId === 'east_asia_involution')) {
+                return {
+                    badge: '⚠️ 東亞升學地獄考驗',
+                    badgeColor: 'bg-indigo-600 text-white',
+                    title: '大考放榜！全家都在盯著你的志願表',
+                    text: '熬過了每天考卷寫不完的高中三年，現在要填志願了。爸媽一直唸著「選電資醫牙才有前途」，但你心裡另有想法……',
+                    choices: [
+                        {
+                            label: '💻 乖乖聽話填爆肝理工/電資科系，為了以後年薪百萬拼了',
+                            hint: '技能 +16，健康 -10（解鎖高薪科技業路線）',
+                            effect: { skill: 16, health: -10, cash: 5 },
+                            addFlag: 'tech_major',
+                            result: '你一頭栽進微積分與寫程式的無盡深淵，頭髮還沒畢業就先掉了一半，但履歷表確實很值錢。'
+                        },
+                        {
+                            label: '🎨 叛逆一把！選自己真正喜歡的文史哲/設計/藝術科系',
+                            hint: '運氣 +12，技能 +6，現金 -5（快樂但容易被長輩唸）',
+                            effect: { luck: 12, skill: 6, cash: -5 },
+                            badge: '浪漫叛逆者',
+                            result: '家庭革命吵了三天三夜，但你終於能做自己喜歡的事，眼裡重新有了光。'
+                        },
+                        {
+                            label: '✈️ 說服家裡砸鍋賣鐵送你出國留學，逃離內捲環境',
+                            hint: '需現金 ≥ 50｜開啟【海外漂泊線】，現金 -25，技能 +15',
+                            req: { stat: 'cash', min: 50 },
+                            effect: { cash: -25, skill: 15, luck: 10 },
+                            addFlag: 'abroad',
+                            badge: '海外留學生',
+                            result: '你拖著兩個大行李箱飛向異國，帳戶瞬間見底，但全新的世界在眼前展開！'
+                        },
+                        {
+                            label: '🔧 不念普通大學了，直接去學水電/餐飲/美容一技之長',
+                            hint: '現金 +15，技能 +10（提早賺錢不受學歷綁架）',
+                            effect: { cash: 15, skill: 10, health: 4 },
+                            badge: '技術流大師',
+                            result: '當大學生還在寫報告吃泡麵時，你已經靠手藝領到第一份扎實的薪水了。'
+                        }
+                    ]
+                };
+            }
+
+            if (age === 22 && originId === 'north_america_tech') {
+                return {
+                    badge: '⚠️ 北美現實鐵拳考驗',
+                    badgeColor: 'bg-purple-600 text-white',
+                    title: '大學畢業了，但你背了天價學貸，而且公司保險還沒生效！',
+                    text: '22 歲畢業典禮剛結束，你就收到高達數萬美金的學貸帳單，同時爸媽暗示你該搬出去獨立生活了。你的第一步是？',
+                    choices: [
+                        {
+                            label: '🏢 瘋狂刷題面試進矽谷大廠，先拿高薪與頂級醫療保險再說',
+                            hint: '需技能 ≥ 65｜現金 +25，健康 -12',
+                            req: { stat: 'skill', min: 65 },
+                            effect: { cash: 25, health: -12, skill: 10 },
+                            addFlag: 'tech_major',
+                            result: '你通過了五輪地獄面試拿到大廠 Offer，年薪驚人，但每天開會開到懷疑人生。'
+                        },
+                        {
+                            label: '🚐 買台二手露營車當數位遊牧民族，邊接案邊環遊北美',
+                            hint: '健康 +12，運氣 +14，現金 -10',
+                            effect: { health: 12, luck: 14, cash: -10 },
+                            badge: '數位遊牧族',
+                            result: '你把國家公園當成辦公室，雖然存款沒什麼增加，但這輩子自由度拉滿！'
+                        },
+                        {
+                            label: '🚀 找兩個同學在車庫寫 App 創業，賭一把成為下一個獨角獸',
+                            hint: '高風險賭注！可能暴富或直接負債破產',
+                            isGamble: true,
+                            gambleType: 'startup',
+                            result: '你們每天吃著冷掉的披薩寫程式，把青春全押在這個瘋狂點子上！'
+                        },
+                        {
+                            label: '🍔 先去咖啡廳或超市打工過渡，慢慢還學貸再做打算',
+                            hint: '現金 +5，健康 +5（佛系抗壓）',
+                            effect: { cash: 5, health: 5, luck: 3 },
+                            result: '雖然被親戚問東問西有點尷尬，但你把心態調整得很好，不急著被社會推著跑。'
+                        }
+                    ]
+                };
+            }
+
+            if (age === 30 && (originId === 'taiwan_middle' || originId === 'east_asia_involution')) {
+                return {
+                    badge: '⚠️ 東亞三十歲終極難題',
+                    badgeColor: 'bg-rose-600 text-white',
+                    title: '房價又漲了！到底要不要捏著大腿背 40 年房貸？',
+                    text: '30 歲的你看著房東又寄來漲租通知，身邊朋友一個個買了預售屋。把所有存款拿去付頭期款，未來 40 年每個月薪水一半都要交給銀行，你買不買？',
+                    choices: [
+                        {
+                            label: '🏠 買！就算吃土也要上車，沒房以後老了沒人租給你',
+                            hint: '需現金 ≥ 45｜背上【房奴】標籤，現金 -28，運氣 +8',
+                            req: { stat: 'cash', min: 45 },
+                            effect: { cash: -28, luck: 8, health: -6 },
+                            addFlag: 'mortgage_slave',
+                            badge: '40年房貸戰士',
+                            result: '簽下合約的那一刻你手都在抖，戶頭瞬間歸零，但看著屬於自己的鑰匙心裡踏實了許多。'
+                        },
+                        {
+                            label: '📈 堅決不當房奴！把頭期款拿去買美股 ETF 與科技股',
+                            hint: '現金 +15，技能 +6（投資有賺有賠）',
+                            effect: { cash: 15, skill: 6, luck: 4 },
+                            badge: '股海存股族',
+                            result: '你繼續租著小套房，但看著證券戶裡的股息越滾越多，覺得自己清醒得不得了。'
+                        },
+                        {
+                            label: '🏡 逃離大都市！搬回鄉下或二三線城市躺平生活',
+                            hint: '健康 +16，現金 +5，運氣 -6',
+                            effect: { health: 16, cash: 5, luck: -6 },
+                            badge: '脫北躺平族',
+                            result: '物價直接砍半、空氣變超好，雖然薪水少了一點，但你終於找回了生活的節奏。'
+                        },
+                        {
+                            label: '👨‍👩‍👧‍👦 找爸媽贊助「六個錢包」一起湊頭期款買大房',
+                            hint: '需運氣 ≥ 55｜現金 -10，但長輩從此對你生活指手畫腳',
+                            req: { stat: 'luck', min: 55 },
+                            effect: { cash: -10, health: -4, luck: 6 },
+                            addFlag: 'mortgage_slave',
+                            result: '爸媽幫你出了大半頭期款，代價是每個週末他們都會拿備用鑰匙直接開門進來「關心」你。'
+                        }
+                    ]
+                };
+            }
+
+            if ((age === 26 || age === 30) && (originId === 'latam_urban' || originId === 'sea_emerging')) {
+                return {
+                    badge: '⚠️ 時代浪潮與現實抉擇',
+                    badgeColor: 'bg-orange-600 text-white',
+                    title: '國內通膨嚴重、治安令人擔憂，你要留下還是出走？',
+                    text: '最近貨幣貶值超快，薪水剛發下來就變薄了。剛好有個機會擺在眼前，決定你下半輩子在哪裡生活：',
+                    choices: [
+                        {
+                            label: '🛫 賭上一切！申請工作簽證或打工度假潤去歐美/日韓',
+                            hint: '需技能 ≥ 50 或 現金 ≥ 45｜開啟【海外漂泊線】',
+                            req: { stat: 'skill', min: 50 },
+                            effect: { cash: -15, skill: 12, luck: 10, health: -5 },
+                            addFlag: 'abroad',
+                            badge: '跨國打拼人',
+                            result: '你離開了熟悉的故鄉，在語言不通的異國從零開始，雖然孤單但賺的是強勢貨幣！'
+                        },
+                        {
+                            label: '🏪 留在本地做跨境電商或觀光客生意，專賺外國人的錢',
+                            hint: '現金 +18，技能 +8，運氣 +5',
+                            effect: { cash: 18, skill: 8, luck: 5 },
+                            badge: '在地生意人',
+                            result: '你腦筋動得超快，利用本地低成本優勢把商品賣到海外，成了街坊鄰居眼中的成功人士。'
+                        },
+                        {
+                            label: '🤝 加入大型外資企業當本地主管，穩穩領高薪抗通膨',
+                            hint: '需技能 ≥ 60｜現金 +20，健康 -8',
+                            req: { stat: 'skill', min: 60 },
+                            effect: { cash: 20, health: -8, skill: 6 },
+                            result: '外商公司的薪水跟美金掛鉤，讓你完全不受國內通膨影響，生活品質三級跳。'
+                        },
+                        {
+                            label: '🍻 管他什麼通膨，及時行樂！跟朋友合夥開一間小酒吧/小吃攤',
+                            hint: '運氣 +14，健康 +6，現金 -8',
+                            effect: { luck: 14, health: 6, cash: -8 },
+                            badge: '快樂小老闆',
+                            result: '店裡每天晚上都客滿，雖然扣掉原物料漲價沒賺多少，但你交遍了全城的朋友。'
+                        }
+                    ]
+                };
+            }
+
+            // --- 通用人生階段龐大題庫 (涵蓋 3歲 ~ 84歲) ---
+            const GENERAL_QUESTIONS = {
+                3: {
+                    badge: '🍼 幼兒時期',
+                    badgeColor: 'bg-sky-500 text-white',
+                    title: '3 歲的你剛學會滿屋子亂跑，展現出驚人的好奇心！',
+                    text: '家裡大人正忙著各自的事情，你一個人坐在地板上，眼前有幾樣東西最吸引你的注意：',
+                    choices: [
+                        {
+                            label: '🧩 盯著積木跟繪本發呆，自己研究怎麼拆開又組起來',
+                            hint: '技能 +10，健康 -2（從小就有工程師潛力）',
+                            effect: { skill: 10, health: -2 },
+                            result: '你安靜得讓大人以為你睡著了，結果轉頭發現你把家裡的遙控器拆成了十幾塊。'
+                        },
+                        {
+                            label: '🏃 精力旺盛到處爬上爬下，跟鄰居小孩玩泥巴追逐戰',
+                            hint: '健康 +12，運氣 +4（體質超好但也常摔得髒兮兮）',
+                            effect: { health: 12, luck: 4 },
+                            result: '你每天都像一顆小砲彈一樣衝來衝去，雖然膝蓋常貼著OK繃，但免疫力強到幾乎不感冒。'
+                        },
+                        {
+                            label: '😄 見人就笑、超會撒嬌，每次出門都能騙到路人給糖果',
+                            hint: '運氣 +12，現金 +3（天生社交恐怖分子）',
+                            effect: { luck: 12, cash: 3 },
+                            badge: '天生万人迷',
+                            result: '全社區的阿公阿嬤都認識你，每次經過市場都有免費的水果跟餅乾可以拿。'
+                        },
+                        {
+                            label: '📱 搶大人的手機和平板來滑，無師自通學會點開卡通影片',
+                            hint: '技能 +6，健康 -6（提早成為3C兒童）',
+                            effect: { skill: 6, health: -6 },
+                            result: '你連字都還不認識，就已經會自己跳過廣告、切換頻道，但眼科醫生已經在向你招手了。'
+                        }
+                    ]
+                },
+                6: {
+                    badge: '🎒 童年啟蒙',
+                    badgeColor: 'bg-teal-500 text-white',
+                    title: '6 歲準備上小學了！課餘時間要怎麼安排？',
+                    text: '看著別人家的小孩開始學各種才藝，家裡決定讓你挑一樣東西當作課後重心（在能力範圍內）：',
+                    choices: [
+                        {
+                            label: '🧮 參加珠心算、英文或程式邏輯班，贏在起跑點',
+                            hint: '技能 +12，運氣 -4（童年少了一點玩樂時間）',
+                            effect: { skill: 12, luck: -4 },
+                            result: '你的計算速度比計算機還快，每次考試都拿滿分，成為親戚口中「別人家的孩子」。'
+                        },
+                        {
+                            label: '⚽ 參加足球、游泳或田徑校隊，每天在操場揮灑汗水',
+                            hint: '健康 +14，運氣 +6（陽光健康的運動健將）',
+                            effect: { health: 14, luck: 6 },
+                            result: '你在球場上結交了一輩子的死黨，身材抽高得很快，身體素質打下了超好底子。'
+                        },
+                        {
+                            label: '🎮 放學書包一丟就衝去網咖/電動間或看漫畫，快樂至上',
+                            hint: '運氣 +8，健康 -4，技能 -2（快樂童年萬歲）',
+                            effect: { luck: 8, health: -4, skill: -2 },
+                            result: '雖然常因為沒寫作業被老師罰站，但你這段無憂無慮的童年回憶無價！'
+                        },
+                        {
+                            label: '💰 幫家裡看店、做家事賺零用錢，偷偷存進小豬撲滿',
+                            hint: '現金 +10，技能 +4（從小就有財商）',
+                            effect: { cash: 10, skill: 4 },
+                            badge: '小小守財奴',
+                            result: '當同學還在花錢買垃圾食物時，你的小豬撲滿已經沉甸甸地拿不起來了。'
+                        }
+                    ]
+                },
+                10: {
+                    badge: '🏫 小學高年級',
+                    badgeColor: 'bg-cyan-600 text-white',
+                    title: '10 歲的班級風波：同學排擠與同儕壓力',
+                    text: '班上有幾個愛現的同學帶頭孤立一個家境比較貧困的轉學生，甚至嘲笑他的穿著。站在旁邊的你決定怎麼做？',
+                    choices: [
+                        {
+                            label: '🦸 挺身而出幫轉學生說話，順便帶大家一起跟他玩',
+                            hint: '運氣 +14，健康 -3（可能被帶頭的找麻煩，但收穫真友誼）',
+                            effect: { luck: 14, health: -3 },
+                            badge: '正義感爆棚',
+                            result: '你差點跟班霸打起來，但從那天起全班都服你，那個轉學生後來也成了你一生的貴人。'
+                        },
+                        {
+                            label: '🤐 裝作沒看到、低頭寫自己的功課，明哲保身最安全',
+                            hint: '技能 +6，運氣 -3（不惹事但也沒交到真心朋友）',
+                            effect: { skill: 6, luck: -3 },
+                            result: '你安然度過了小學時期，沒被任何人針對，只是偶爾回想起來心裡有點酸酸的。'
+                        },
+                        {
+                            label: '🗣️ 偷偷去跟班導師打小報告，讓大人來處理',
+                            hint: '技能 +4，運氣 -6（被同學私下叫抓耙仔）',
+                            effect: { skill: 4, luck: -6 },
+                            result: '老師確實出面制止了霸凌，但也因此讓你被班上小團體疏遠了一陣子。'
+                        },
+                        {
+                            label: '🍫 私下偷偷塞零食跟文具安慰那個轉學生，不正面衝突',
+                            hint: '運氣 +10，現金 -2（溫柔又聰明的做法）',
+                            effect: { luck: 10, cash: -2 },
+                            result: '你用最溫柔的方式接住了別人的脆弱，你們成了放學後一起走回家的秘密好友。'
+                        }
+                    ]
+                },
+                14: {
+                    badge: '⚡ 青春期風暴',
+                    badgeColor: 'bg-blue-600 text-white',
+                    title: '14 歲的叛逆期來了！荷爾蒙與自我意識大爆發',
+                    text: '看著鏡子裡長出青春痘的臉，你開始覺得大人講的話全都是廢話。這段時間你把最多精力花在哪裡？',
+                    choices: [
+                        {
+                            label: '📚 閉關苦讀，把所有不爽發洩在考卷和競賽獎狀上',
+                            hint: '技能 +15，健康 -8（用實力讓所有人閉嘴）',
+                            effect: { skill: 15, health: -8 },
+                            result: '你成了老師眼中的學霸，雖然黑眼圈重到像熊貓，但成績單就是你最強的護身符。'
+                        },
+                        {
+                            label: '💘 談了一場轟轟烈烈的純愛初戀，每天傳訊息聊到半夜',
+                            hint: '運氣 +12，技能 -5（甜蜜又心碎的青春必修課）',
+                            effect: { luck: 12, skill: -5 },
+                            result: '你們在放學後的操場邊散步、分享同一副耳機，雖然半年後就分手了，但永遠忘不掉。'
+                        },
+                        {
+                            label: '🎸 跟朋友組樂團、練街舞或沉迷電競，夢想靠才華吃飯',
+                            hint: '運氣 +10，技能 +6，現金 -5',
+                            effect: { luck: 10, skill: 6, cash: -5 },
+                            result: '你在校慶舞台上的表演尖叫聲震耳欲聾，那一刻你覺得自己就是世界中心！'
+                        },
+                        {
+                            label: '🏋️ 瘋狂健身、研究穿搭與髮型，誓言要完成顏值逆襲',
+                            hint: '健康 +12，運氣 +8（外型大改造）',
+                            effect: { health: 12, luck: 8 },
+                            badge: '青春期逆襲',
+                            result: '開學後全班同學差點認不出你，自信心爆棚讓你做什麼事都順風順水。'
+                        }
+                    ]
+                },
+                18: {
+                    badge: '🎓 成年分水嶺',
+                    badgeColor: 'bg-indigo-600 text-white',
+                    title: '18 歲成年了！法律上你已經要為自己的人生負責',
+                    text: '站在成年禮的門口，無論你出生在哪個國家，都必須決定接下來幾年的大方向：',
+                    choices: [
+                        {
+                            label: '🏫 繼續升學念大學，拿一張漂亮的文憑當作社會敲門磚',
+                            hint: '技能 +14，現金 -8（投資大腦，延後進入職場）',
+                            effect: { skill: 14, cash: -8 },
+                            result: '你背起書包走進大學校園，體驗了社團、夜衝與期末考前抱佛腳的經典大學生活。'
+                        },
+                        {
+                            label: '💼 直接進入職場從基層做起，早別人四年累積存款與經驗',
+                            hint: '現金 +16，健康 -6（提早接受社會毒打）',
+                            effect: { cash: 16, health: -6, skill: 4 },
+                            result: '第一個月領到薪水時你感動到想哭，但也見識到了職場上笑裡藏刀的各種潛規則。'
+                        },
+                        {
+                            label: '🌍 申請國際志工或打工度假，先去看看這個世界長怎樣',
+                            hint: '運氣 +15，技能 +8，現金 -10',
+                            effect: { luck: 15, skill: 8, cash: -10 },
+                            addFlag: 'abroad',
+                            badge: '世界探索者',
+                            result: '你在異國農場剪過羊毛、在青年旅舍認識了五大洲的朋友，眼界徹底打開。'
+                        },
+                        {
+                            label: '🎖️ 簽下去從軍或考取公職體系，追求一輩子穩定的鐵飯碗',
+                            hint: '現金 +14，健康 +6，運氣 -5（用自由換取安穩）',
+                            effect: { cash: 14, health: 6, luck: -5 },
+                            badge: '鐵飯碗體制人',
+                            result: '雖然每天規律到像機器人，但每個月準時入帳的薪水讓你在同齡人中顯得特別穩重。'
+                        }
+                    ]
+                },
+                22: {
+                    badge: '💼 社會新鮮人',
+                    badgeColor: 'bg-emerald-600 text-white',
+                    title: '22 歲正式踏入職場！老闆正在對你畫大餅',
+                    text: '面試了十幾家公司終於拿到錄取通知，主管拍著你的肩膀說：「年輕人不要計較薪水，公司明年上市就分你股票！」你怎麼接招？',
+                    choices: [
+                        {
+                            label: '🔥 相信大餅！每天加班到半夜、搶著做最難的專案',
+                            hint: '技能 +14，現金 +10，健康 -14（用肝換取升遷機會）',
+                            effect: { skill: 14, cash: 10, health: -14 },
+                            badge: '爆肝社畜',
+                            result: '公司沒上市，但你確實練就了一身超強業務能力，被競爭對手高薪挖角了！'
+                        },
+                        {
+                            label: '⏰ 準時上下班！給多少錢做多少事，下班後經營副業',
+                            hint: '現金 +12，健康 +6，技能 +6（聰明的現代打工人）',
+                            effect: { cash: 12, health: 6, skill: 6 },
+                            badge: '斜槓青年',
+                            result: '你白天在公司摸魚領底薪，晚上做自媒體/接案賺外快，副業收入很快就超過本薪。'
+                        },
+                        {
+                            label: '🤝 專攻職場社交！每天幫主管買咖啡、跟同事打好關係',
+                            hint: '運氣 +16，現金 +8，技能 -2（人情世故滿分）',
+                            effect: { luck: 16, cash: 8, skill: -2 },
+                            badge: '辦公室政治大師',
+                            result: '雖然你寫報告常出錯，但因為嘴巴甜又會做人，每次升遷名單上永遠都有你的名字。'
+                        },
+                        {
+                            label: '🤬 受不了慣老闆！做三個月直接裸辭環島/休息再找',
+                            hint: '健康 +10，運氣 +5，現金 -12（爽度一百但荷包在哭）',
+                            effect: { health: 10, luck: 5, cash: -12 },
+                            result: '遞出辭呈走出公司大門的那一刻，連路邊的空氣聞起來都是甜的！'
+                        },
+                        {
+                            label: '🚀 覺得自己比老闆還懂，直接刷卡借錢出來創業！',
+                            hint: '高風險賭注！成功直接財富自由，失敗背債哭哭',
+                            isGamble: true,
+                            gambleType: 'startup',
+                            result: '你租了一間小辦公室掛上招牌，正式成為一名睡不著覺的創業者！'
+                        }
+                    ]
+                },
+                26: {
+                    badge: '💸 財富與感情十字路口',
+                    badgeColor: 'bg-amber-600 text-white',
+                    title: '26 歲，存到人生第一小桶金，身邊也出現了心動對象',
+                    text: '工作了幾年，戶頭終於有一點點數字了，同時在朋友聚會上認識了一個讓你超心動的人。接下來這幾年你把重心放哪？',
+                    choices: [
+                        {
+                            label: '💍 談一場認真的戀愛並同居，開始規劃兩個人的未來',
+                            hint: '運氣 +14，健康 +5，現金 -10（甜蜜的雙人世界）',
+                            effect: { luck: 14, health: 5, cash: -10 },
+                            addFlag: 'married',
+                            result: '你們一起逛 IKEA、為了誰洗碗吵架又和好，生活雖然多了開銷但再也不孤單。'
+                        },
+                        {
+                            label: '🪙 聽說虛擬貨幣跟 AI 概念股正在狂飆，把存款 All-in 博翻身！',
+                            hint: '極高風險賭注！可能一夕暴富或瞬間歸零變韭菜',
+                            isGamble: true,
+                            gambleType: 'crypto',
+                            result: '你每天半夜三點盯著紅紅綠綠的 K 線圖，心跳速度比跑馬拉松還快！'
+                        },
+                        {
+                            label: '📖 拒絕無效社交，週末全拿去考高含金量證照或念在職專班',
+                            hint: '技能 +16，現金 -8，運氣 -4（投資自己最穩當）',
+                            effect: { skill: 16, cash: -8, luck: -4 },
+                            result: '當別人在滑短影音時，你默默拿下了業界頂尖證照，薪水直接跳了一個級距。'
+                        },
+                        {
+                            label: '✈️ 人生苦短！把存下來的錢拿去歐洲/日本深度旅遊一圈',
+                            hint: '健康 +10，運氣 +12，現金 -18（花錢買快樂與回憶）',
+                            effect: { health: 10, luck: 12, cash: -18 },
+                            badge: '享樂主義者',
+                            result: '雖然回來後戶頭又變回四位數，但你在巴黎鐵塔和富士山下的照片夠你回味一輩子。'
+                        }
+                    ]
+                },
+                30: {
+                    badge: '🔥 三十而立大考驗',
+                    badgeColor: 'bg-rose-600 text-white',
+                    title: '30 歲了！長輩開始瘋狂催婚催生，職場也要求你帶團隊',
+                    text: '過年回家親戚問東問西，公司也把幾個難搞的新人丟給你帶。面對三十歲的雙重夾擊，你的態度是？',
+                    choices: [
+                        {
+                            label: '👶 順其自然結婚生子，迎接人生最混亂也最溫暖的育兒挑戰',
+                            hint: '運氣 +15，現金 -20，健康 -10（解鎖【為人父母】線）',
+                            effect: { luck: 15, cash: -20, health: -10 },
+                            addFlag: 'has_kid',
+                            badge: '新手爸媽戰士',
+                            result: '半夜泡奶粉、換尿布讓你黑眼圈深到見骨，但看到寶寶對你笑的那一秒，一切都值了。'
+                        },
+                        {
+                            label: '👑 堅定當頂客族/單身貴族！把錢跟時間全留給自己與伴侶',
+                            hint: '現金 +18，健康 +8，運氣 -4（生活品質超爽）',
+                            effect: { cash: 18, health: 8, luck: -4 },
+                            badge: '瀟灑單身/頂客族',
+                            result: '沒有學區房跟補習班的壓力，你週末想飛哪就飛哪，活成了同齡人最羨慕的樣子。'
+                        },
+                        {
+                            label: '📈 接下部門主管的重擔，在職場上殺出一片血路',
+                            hint: '需技能 ≥ 60｜現金 +22，健康 -12',
+                            req: { stat: 'skill', min: 60 },
+                            effect: { cash: 22, health: -12, skill: 8 },
+                            result: '你學會了開會講廢話、向上管理與幫團隊背鍋，年薪終於突破了當初不敢想像的數字。'
+                        },
+                        {
+                            label: '🧘 身體開始抗議了！戒掉手搖飲與熬夜，報名健身房與重訓',
+                            hint: '健康 +18，現金 -6（健康才是唯一真理）',
+                            effect: { health: 18, cash: -6 },
+                            badge: '自律健身狂',
+                            result: '半年後你練出了漂亮的肌肉線條，體檢報告上的紅字全部消失，精神好到像 20 歲！'
+                        }
+                    ]
+                },
+                35: {
+                    badge: '🌪️ 35 歲職場天花板危機',
+                    badgeColor: 'bg-purple-600 text-white',
+                    title: '35 歲魔咒降臨！公司引進最新 AI 系統，開始優化資深員工',
+                    text: '人力資源部找你喝咖啡，暗示你的薪水太高、工作內容已經可以被 AI 和兩個年輕人取代。此時你怎麼破局？',
+                    choices: [
+                        {
+                            label: '🤖 搶先掌握 AI 工具與自動化流程，變成公司裡唯一會指揮 AI 的人',
+                            hint: '需技能 ≥ 65｜技能 +15，現金 +16，健康 -5',
+                            req: { stat: 'skill', min: 65 },
+                            effect: { skill: 15, cash: 16, health: -5 },
+                            badge: 'AI 馴獸師',
+                            result: '你不僅沒被裁員，還用 AI 把原本五個人的工作在兩小時內做完，直接升任數位轉型總監！'
+                        },
+                        {
+                            label: '💰 拿著優渥的資遣費開心走人！轉行開咖啡廳或經營自媒體',
+                            hint: '現金 +10，運氣 +12，技能 +5',
+                            effect: { cash: 10, luck: 12, skill: 5 },
+                            result: '你拿着那筆賠償金去歐洲玩了一個月，回來後開啟了完全不同跑道的第二人生。'
+                        },
+                        {
+                            label: '🚗 暫時放下身段去跑外送、開多元計程車，先保住現金流再說',
+                            hint: '現金 +12，健康 -8，運氣 +4（能屈能伸真漢子）',
+                            effect: { cash: 12, health: -8, luck: 4 },
+                            badge: '街頭騎士',
+                            result: '風吹日曬雖然辛苦，但每天看著入帳金額，你心裡非常踏實：只要肯動手就餓不死！'
+                        },
+                        {
+                            label: '🤝 靠過去累積的廣大人脈，跳槽去客戶或供應商那邊當顧問',
+                            hint: '需運氣 ≥ 60｜現金 +20，健康 +4',
+                            req: { stat: 'luck', min: 60 },
+                            effect: { cash: 20, health: 4, luck: 6 },
+                            result: '平時廣結善緣終於派上用場！老客戶直接開出比原本高 30% 的薪水把你挖過去。'
+                        }
+                    ]
+                },
+                40: {
+                    badge: '⚖️ 不惑之年的家庭與自我',
+                    badgeColor: 'bg-orange-600 text-white',
+                    title: '40 歲，上有老下有小（或房貸帳單），半夜醒來常感到一陣迷惘',
+                    text: '看著鏡子裡冒出來的幾根白頭髮，你突然問自己：「我這輩子難道就這樣日復一日嗎？」你決定做點改變：',
+                    choices: [
+                        {
+                            label: '👨‍👩‍👧‍👦 把週末完全留給家人與老父母，帶全家人去露營與國內旅遊',
+                            hint: '運氣 +16，健康 +8，現金 -10',
+                            effect: { luck: 16, health: 8, cash: -10 },
+                            result: '看到父母開心的笑容與家人的陪伴，你突然明白平凡的幸福才是世界上最奢侈的東西。'
+                        },
+                        {
+                            label: '📊 專注資產配置與被動收入，目標 50 歲前達成財富自由提早退休',
+                            hint: '需現金 ≥ 55｜現金 +22，技能 +8',
+                            req: { stat: 'cash', min: 55 },
+                            effect: { cash: 22, skill: 8, health: -4 },
+                            badge: 'FIRE 退休預備軍',
+                            result: '你的股息與租金收入已經快要追上日常開銷，每天上班的心情變得超級輕鬆。'
+                        },
+                        {
+                            label: '🎨 重拾年輕時的夢想！去學樂器、畫畫、潛水或寫小說',
+                            hint: '健康 +10，運氣 +12，技能 +6',
+                            effect: { health: 10, luck: 12, skill: 6 },
+                            result: '下班後的才藝教室成了你的精神避難所，你甚至在社群上累積了一批死忠粉絲。'
+                        },
+                        {
+                            label: '🏥 安排一次全身高階精密健檢，提早處理掉潛在的身體隱患',
+                            hint: '需現金 ≥ 35｜健康 +20，現金 -12（花錢買命超值得）',
+                            req: { stat: 'cash', min: 35 },
+                            effect: { health: 20, cash: -12 },
+                            result: '健檢意外發現一顆早期良性息肉並順利切除，醫生說再晚兩年發現就麻煩大了！'
+                        }
+                    ]
+                },
+                45: {
+                    badge: '🌊 中年風浪考驗',
+                    badgeColor: 'bg-teal-600 text-white',
+                    title: '45 歲，老朋友找你合夥投資一個「穩賺不賠」的大項目',
+                    text: '認識二十年的老同學神秘兮兮地約你吃飯，說有個綠色能源/跨境貿易的內部名額，只要投一筆錢進去，三年就能翻倍！你怎麼決定？',
+                    choices: [
+                        {
+                            label: '🧐 保持清醒！禮貌拒絕並勸他小心，安穩守住自己的老本',
+                            hint: '現金 +6，技能 +6（逃過一劫的機率高達 80%）',
+                            effect: { cash: 6, skill: 6 },
+                            badge: '人間清醒',
+                            result: '半年後那個項目果然爆雷捲款潛逃，老同學哭得半死，你慶幸自己當初沒有貪心。'
+                        },
+                        {
+                            label: '🎲 相信兄弟！拿出一半積蓄跟著賭一把大富貴',
+                            hint: '超高風險賭注！可能直接退休或血本無歸',
+                            isGamble: true,
+                            gambleType: 'partner',
+                            result: '你簽下合夥契約並把錢匯了過去，接下來每天都在祈禱奇蹟發生……'
+                        },
+                        {
+                            label: '🔍 動用專業人脈先做徹底的法律與財務盡職調查再決定',
+                            hint: '需技能 ≥ 68｜現金 +15，技能 +8',
+                            req: { stat: 'skill', min: 68 },
+                            effect: { cash: 15, skill: 8, luck: 4 },
+                            result: '你一眼就看穿合約裡的漏洞，反手幫老同學止損，他感激得把你當再生父母！'
+                        },
+                        {
+                            label: '🏃 裝窮說自己最近房貸/家裡開銷大沒錢，順便借點小錢給他週轉',
+                            hint: '運氣 +10，現金 -5（既保住本金又維持了友情）',
+                            effect: { luck: 10, cash: -5 },
+                            result: '你只包了個小紅包當作支持，既沒有傷感情又保住了大半身家，智慧滿分。'
+                        }
+                    ]
+                },
+                52: {
+                    badge: '🌅 半百人生轉折',
+                    badgeColor: 'bg-amber-500 text-white',
+                    title: '52 歲，體力明顯不如從前，你開始重新思考工作的意義',
+                    text: '熬夜一天要補眠三天，老花眼鏡也戴上了。看著帳戶裡的存款與剩下的時間，你決定怎麼度過五十幾歲？',
+                    choices: [
+                        {
+                            label: '🏖️ 宣布提早半退休！辭掉正職，只接輕鬆的顧問或興趣兼職',
+                            hint: '需現金 ≥ 60｜健康 +18，運氣 +12，現金 -8',
+                            req: { stat: 'cash', min: 60 },
+                            effect: { health: 18, luck: 12, cash: -8 },
+                            badge: '提早退休人生贏家',
+                            result: '當同齡人還在擠捷運打卡時，你已經在平日上午的咖啡廳裡悠哉看報紙了！'
+                        },
+                        {
+                            label: '💼 繼續堅守崗位多賺幾年退休金，趁還能動的時候多存一點',
+                            hint: '現金 +16，健康 -10（務實穩健的選擇）',
+                            effect: { cash: 16, health: -10 },
+                            result: '你咬緊牙關再拼最後一哩路，帳戶數字越來越厚實，給足了自己晚年的底氣。'
+                        },
+                        {
+                            label: '⛰️ 迷上登山、馬拉松或太極拳，決心在 50 歲後練出最強體魄',
+                            hint: '健康 +20，運氣 +8（年齡只是數字）',
+                            effect: { health: 20, luck: 8 },
+                            badge: '不老體能王',
+                            result: '你成功登頂了好幾座大山，體脂率比二十幾歲的年輕人還要低，紅光滿面！'
+                        },
+                        {
+                            label: '🎓 報名社區大學或碩士在職班，活到老學到老結交新朋友',
+                            hint: '技能 +14，運氣 +12（心態永遠年輕）',
+                            effect: { skill: 14, luck: 12 },
+                            result: '你在課堂上認識了一群志同道合的同學，週末一起看展、喝茶，完全不覺得自己老了。'
+                        }
+                    ]
+                },
+                60: {
+                    badge: '🧓 花甲之年',
+                    badgeColor: 'bg-sky-600 text-white',
+                    title: '60 歲正式邁入樂齡階段！身邊陸續傳來老同學住院的消息',
+                    text: '一轉眼已經 60 歲了，看著通訊錄裡幾個再也撥不通的號碼，你更懂得珍惜當下。你的晚年第一站是？',
+                    choices: [
+                        {
+                            label: '🌍 趁腿腳還利索，刷卡報團環遊世界、搭郵輪看極光！',
+                            hint: '需現金 ≥ 50｜運氣 +20，健康 +8，現金 -22',
+                            req: { stat: 'cash', min: 50 },
+                            effect: { luck: 20, health: 8, cash: -22 },
+                            badge: '環球銀髮玩家',
+                            result: '你把這輩子沒看過的風景一次看個夠，相機裡存滿了幾萬張笑得超燦爛的照片。'
+                        },
+                        {
+                            label: '🌱 搬到鄉下買塊小農地種菜養花，過起自給自足的田園生活',
+                            hint: '健康 +16，運氣 +10，現金 -6',
+                            effect: { health: 16, luck: 10, cash: -6 },
+                            badge: '快樂開心農場主',
+                            result: '每天早上被鳥叫聲喚醒，吃著自己種的有機蔬菜，鄰居都誇你越來越年輕。'
+                        },
+                        {
+                            label: '🤝 投入公益志工或社區巡守隊，幫助弱勢並保持社會連結',
+                            hint: '運氣 +18，健康 +6（助人為快樂之本）',
+                            effect: { luck: 18, health: 6 },
+                            badge: '社區暖心英雄',
+                            result: '你成了里長和社區居民最依賴的熱心長輩，每天都過得充實又有成就感。'
+                        },
+                        {
+                            label: '📱 意外成為「高齡網紅」！拍短影音分享人生智慧爆紅',
+                            hint: '需技能 ≥ 55 或 運氣 ≥ 60｜現金 +18，運氣 +15',
+                            req: { stat: 'luck', min: 60 },
+                            effect: { cash: 18, luck: 15, skill: 6 },
+                            badge: '銀髮網紅KOL',
+                            result: '年輕人超愛看你犀利又幽默的人生吐槽，業配跟採訪接到手軟，開啟第三春！'
+                        }
+                    ]
+                },
+                68: {
+                    badge: '🕊️ 古稀之年',
+                    badgeColor: 'bg-emerald-700 text-white',
+                    title: '68 歲，你已經見證了大半個世紀的時代變遷',
+                    text: '從當年的紙本時代一路活到全自動機器人與 AI 普及的年代，現在的你每天過得怎麼樣？',
+                    choices: [
+                        {
+                            label: '🍵 每天公園散步、下棋、泡茶聊天，享受慢下來的平靜時光',
+                            hint: '健康 +10，運氣 +10（平平淡淡才是真）',
+                            effect: { health: 10, luck: 10 },
+                            result: '你已經看淡了世上所有的紛爭，只要今天天氣晴朗、早餐好吃，就是最棒的一天。'
+                        },
+                        {
+                            label: '📝 開始整理一生的照片與回憶錄，把家族故事留給後代',
+                            hint: '技能 +10，運氣 +14（留下生命存在過的痕跡）',
+                            effect: { skill: 10, luck: 14 },
+                            result: '你一字一句寫下這輩子經歷過的荒唐與感動，翻閱時忍不住笑出了聲。'
+                        },
+                        {
+                            label: '🏥 乖乖聽醫生的話定期回診吃藥，絕不跟自己的身體硬撐',
+                            hint: '健康 +14，現金 -6（科學養生最長壽）',
+                            effect: { health: 14, cash: -6 },
+                            result: '雖然每天藥盒裡有好幾顆保健品，但你的血壓跟血糖控制得比很多中年人還好。'
+                        },
+                        {
+                            label: '📜 提早立好遺囑並把財產規劃清楚，免得以後家人為了錢吵架',
+                            hint: '運氣 +12，技能 +6（豁達又負責任的智慧）',
+                            effect: { luck: 12, skill: 6 },
+                            badge: '豁達智者',
+                            result: '辦完公證手續後你覺得心頭一塊大石落地，剩下的每一天都是賺到的自由時光。'
+                        }
+                    ]
+                },
+                76: {
+                    badge: '🌟 歲月靜好',
+                    badgeColor: 'bg-zinc-700 text-white',
+                    title: '76 歲，你已經超越了地球上絕大多數人的平均壽命！',
+                    text: '走路速度慢了下來，耳朵也稍微有點背，但你的眼神依然清澈。在這個年紀，你最想做什麼？',
+                    choices: [
+                        {
+                            label: '🍰 想吃什麼就吃什麼！不再嚴格忌口，開心最重要',
+                            hint: '運氣 +16，健康 -5（人生最後的任性）',
+                            effect: { luck: 16, health: -5 },
+                            result: '你每天下午都要來一塊蛋糕配紅茶，笑著說：「都這把年紀了，開心比什麼都重要！」'
+                        },
+                        {
+                            label: '🌞 每天早上在陽台曬太陽、聽老歌，回憶年輕時的點點滴滴',
+                            hint: '健康 +8，運氣 +10',
+                            effect: { health: 8, luck: 10 },
+                            result: '溫暖的陽光灑在身上，那些曾經讓你痛哭過的人與事，如今想起來都只剩溫柔。'
+                        },
+                        {
+                            label: '💌 把這輩子最想感謝或道歉的人再聯絡一次，不留遺憾',
+                            hint: '運氣 +20（圓滿無憾的靈魂）',
+                            effect: { luck: 20 },
+                            result: '一通電話解開了三十年前的心結，掛掉電話後你覺得這輩子真的沒有遺憾了。'
+                        }
+                    ]
+                }
+            };
+
+            return GENERAL_QUESTIONS[age] || GENERAL_QUESTIONS[76];
+        }
+
+        /**
+         * 5. 高頻率、高影響力「突發意外事件系統」(Accidents & Miracles)
+         * 分為：黑色悲劇意外、白色日常轉折、金色天降奇蹟
+         * 許多意外會直接改變劇情走向，或提供 3 個緊急應對選項！
+         */
+        function triggerSuddenAccident() {
+            const originId = state.origin.id;
+            const age = state.age;
+            const hasHealthShield = (originId === 'taiwan_middle' || originId === 'nordic_welfare');
+
+            // 動態組合符合當前年齡與狀態的意外池
+            const accidentPool = [
+                // --- 黑色悲劇意外 ---
+                {
+                    type: 'tragedy',
+                    minAge: 18, maxAge: 75,
+                    title: '🚨 突發意外：騎車/過馬路遭遇嚴重車禍！',
+                    text: '一個恍神的三寶駕駛直接闖紅燈撞了上來！你被緊急送進急診室，需要動手術與漫長的復健。',
+                    hasEmergencyChoices: true,
+                    choices: [
+                        {
+                            label: '🛡️ 動用全民健保/高福利醫療系統（需台灣或北歐出身）',
+                            hint: '健康 -12，現金 -4（健保神盾救了你的荷包！）',
+                            reqCondition: () => hasHealthShield,
+                            reqText: '僅限台灣/北歐出身',
+                            effect: { health: -12, cash: -4 },
+                            badge: '健保受益者',
+                            result: '出院看到帳單金額時你感動到差點哭出來，健保制度直接幫你省下了傾家蕩產的危機！'
+                        },
+                        {
+                            label: '💳 咬牙刷卡自費頂級微創手術與私人病房，保命最重要',
+                            hint: '需現金 ≥ 40｜健康 -10，現金 -26',
+                            req: { stat: 'cash', min: 40 },
+                            effect: { health: -10, cash: -26 },
+                            result: '雖然存款瞬間少了一大截，但手術非常成功，幾乎沒有留下後遺症。'
+                        },
+                        {
+                            label: '🩹 沒錢也沒保險，只能隨便包紮硬撐著回家休養',
+                            hint: '健康 -28，運氣 -8（留下嚴重舊傷隱患）',
+                            effect: { health: -28, luck: -8 },
+                            addFlag: 'chronic_pain',
+                            result: '每到下雨天骨頭就痛到睡不著，這場車禍成了你這輩子揮之不去的陰影。'
+                        }
+                    ]
+                },
+                {
+                    type: 'tragedy',
+                    minAge: 20, maxAge: 75,
+                    title: '📱 突發意外：接到「檢察官/投資群組」精密詐騙電話！',
+                    text: '對方不僅能準確唸出你的身分證字號、住址跟最近網購紀錄，還威脅你帳戶涉入洗錢案必須立刻配合監管！你當下的反應是？',
+                    hasEmergencyChoices: true,
+                    choices: [
+                        {
+                            label: '😱 嚇到腦袋一片空白，乖乖去 ATM 操作把積蓄轉過去！',
+                            hint: '現金 -35，運氣 -10（直接變成頭號大韭菜）',
+                            effect: { cash: -35, luck: -10 },
+                            badge: '詐騙集團VIP',
+                            result: '轉完帳五分鐘後你才驚覺被騙，衝去警局報案時警察無奈地搖了搖頭……'
+                        },
+                        {
+                            label: '🧠 察覺話術破綻！反過來跟詐騙集團聊天浪費他兩個小時',
+                            hint: '需技能 ≥ 55｜技能 +8，運氣 +10（防詐意識滿分）',
+                            req: { stat: 'skill', min: 55 },
+                            effect: { skill: 8, luck: 10 },
+                            badge: '反詐達人',
+                            result: '你把騙子耍得團團轉，最後對方氣到直接罵髒話掛電話，超爽！'
+                        },
+                        {
+                            label: '📞 直接掛斷電話並撥打 165 反詐騙專線或問身邊朋友求證',
+                            hint: '運氣 +6，技能 +4（冷靜查證保住身家）',
+                            effect: { luck: 6, skill: 4 },
+                            result: '你冷靜地核實了資訊，成功守住了辛苦存下來的血汗錢。'
+                        }
+                    ]
+                },
+                {
+                    type: 'tragedy',
+                    minAge: 22, maxAge: 60,
+                    title: '📉 突發意外：全球金融海嘯突襲，你買的資產一夜暴跌 70%！',
+                    text: '早上起床打開手機，發現全球股市與幣圈全線崩盤，新聞頭條全是「黑色星期一」。你的資產嚴重縮水，甚至面臨斷頭危機！',
+                    effect: { cash: -24, health: -8, luck: -6 },
+                    badge: '資深韭菜王',
+                    result: '你盯著螢幕發呆了整整一小時，連早餐都吃不下，深刻體會到什麼叫做「憑運氣賺的錢，憑實力賠回去」。'
+                },
+                {
+                    type: 'tragedy',
+                    minAge: 24, maxAge: 55,
+                    title: '🏥 突發意外：長期過勞加上飲食不正常，你突然在辦公室昏倒！',
+                    text: '連續幾個月每天只睡五小時、三餐靠咖啡與外送解決，你的身體終於拉響最高級別警報，被同事叫救護車送進醫院！',
+                    effect: { health: -22, cash: -10, luck: -4 },
+                    result: '躺在急診室吊點滴看著天花板時，你才發現沒了健康，再多薪水都只是醫藥費。'
+                },
+
+                // --- 金色天降奇蹟 ---
+                {
+                    type: 'miracle',
+                    minAge: 16, maxAge: 80,
+                    title: '✨ 天降奇蹟：你隨手拍的日常短片/貼文在網路上意外爆紅！',
+                    text: '昨天隨手發的一段搞笑生活影片，一覺醒來居然破了千萬觀看！各大媒體和品牌廠商紛紛私訊找你合作！',
+                    effect: { cash: 22, luck: 18, skill: 6 },
+                    badge: '天選歐皇',
+                    result: '你莫名其妙就賺到了一整年的薪水，走在路上甚至還有路人認出你來合照！'
+                },
+                {
+                    type: 'miracle',
+                    minAge: 20, maxAge: 75,
+                    title: '💰 天降奇蹟：整理舊外套時翻出一張幾年前買的彩券/冷門股！',
+                    text: '換季洗衣服時從口袋摸出一張皺巴巴的紙條，對獎後發現居然中了二獎（或當初隨手買的冷門科技股翻了十倍）！',
+                    effect: { cash: 26, luck: 15, health: 5 },
+                    badge: '幸運星轉世',
+                    result: '這筆意外之財來得正是時候，你立刻去吃了一頓頂級大餐慶祝！'
+                },
+                {
+                    type: 'miracle',
+                    minAge: 22, maxAge: 65,
+                    title: '🤝 天降奇蹟：幾年前無心幫助過的路人，竟然是大企業總裁/貴人！',
+                    text: '你在某次聚會上被一位大人物認了出來，原來幾年前他落難時你曾順手幫過他一把。他決定親自提拔你並提供頂級資源！',
+                    effect: { luck: 20, cash: 18, skill: 10 },
+                    badge: '貴人運爆棚',
+                    result: '好心真的有好報！這次提拔直接幫你省下了至少十年的奮鬥時間。'
+                },
+
+                // --- 白色日常轉折 ---
+                {
+                    type: 'neutral',
+                    minAge: 18, maxAge: 75,
+                    title: '🐾 生活轉折：你在雨夜的巷口撿到一隻發抖的流浪小貓/小狗',
+                    text: '牠濕漉漉地蹭著你的褲管不肯離開，帶回家養每個月要花不少飼料與醫藥費，但你不帶牠走又於心不忍。',
+                    hasEmergencyChoices: true,
+                    choices: [
+                        {
+                            label: '❤️ 帶回家當主子侍奉！從此成為快樂的鏟屎官',
+                            hint: '健康 +10，運氣 +12，現金 -8（治癒力滿分）',
+                            effect: { health: 10, luck: 12, cash: -8 },
+                            badge: '忠誠鏟屎官',
+                            result: '每天下班開門看到牠衝過來迎接你，所有的職場委屈瞬間煙消雲散。'
+                        },
+                        {
+                            label: '🏠 幫牠洗乾淨拍美照，用心幫牠找到一個有錢的好人家領養',
+                            hint: '運氣 +10，技能 +4（既善良又量力而為）',
+                            effect: { luck: 10, skill: 4 },
+                            result: '新主人每個月都會傳照片給你報平安，你既做了好事又沒增加經濟負擔。'
+                        },
+                        {
+                            label: '🥫 買幾個罐頭餵飽牠就離開，自己都快養不活了不敢亂承諾',
+                            hint: '現金 -1，運氣 +2（務實的溫柔）',
+                            effect: { cash: -1, luck: 2 },
+                            result: '看著牠大口吃完罐頭跑進雨夜，你在心裡默默祝福牠能平安長大。'
+                        }
+                    ]
+                },
+                {
+                    type: 'neutral',
+                    minAge: 6, maxAge: 65,
+                    title: '🦠 時代事件：全球爆發新型流行病，城市宣布居家隔離！',
+                    text: '街上瞬間空無一人，超市泡麵跟衛生紙被搶購一空，你被迫關在房間裡整整一個月不能出門。',
+                    effect: { health: -6, cash: -6, skill: 8, luck: 2 },
+                    result: '你在隔離期間學會了自己煮飯、線上上課，還把以前買了沒看的書全部看完了。'
+                }
+            ];
+
+            // 篩選符合年齡的意外
+            const validAccidents = accidentPool.filter(a => age >= a.minAge && age <= a.maxAge);
+            if (validAccidents.length === 0) return null;
+
+            return validAccidents[Math.floor(Math.random() * validAccidents.length)];
+        }
+
+        /**
+         * 6. 介面渲染與遊戲核心流程控制
+         */
+        function initLobby() {
+            const grid = document.getElementById('origin-selector-grid');
+            grid.innerHTML = '';
+
+            ORIGINS.forEach(origin => {
+                const btn = document.createElement('button');
+                btn.className = 'text-left p-3 rounded-2xl bg-gray-50 dark:bg-zinc-800/70 hover:bg-blue-50 dark:hover:bg-blue-950/30 border border-gray-200 dark:border-zinc-700 hover:border-blue-400 transition-all flex items-start gap-3 cursor-pointer group';
+                btn.onclick = () => startLife(origin.id);
+
+                const buffTag = origin.traits.find(t => t.type === 'buff')?.text || '';
+                const debuffTag = origin.traits.find(t => t.type === 'debuff')?.text || '';
+
+                btn.innerHTML = `
+                    <span class="text-2xl mt-0.5 shrink-0">${origin.flag}</span>
+                    <div class="min-w-0 flex-1">
+                        <div class="flex items-center justify-between gap-1">
+                            <span class="font-bold text-xs sm:text-sm truncate group-hover:text-blue-600 dark:group-hover:text-blue-400">${origin.name}</span>
+                        </div>
+                        <div class="text-[11px] text-gray-400 dark:text-zinc-500 mb-1.5">${origin.probText}</div>
+                        <div class="flex flex-wrap gap-1">
+                            <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-100/80 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 font-bold">${buffTag}</span>
+                            <span class="text-[10px] px-1.5 py-0.5 rounded bg-rose-100/80 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 font-bold">${debuffTag}</span>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(btn);
+            });
+        }
+
+        function pickWeightedOrigin() {
+            const totalWeight = ORIGINS.reduce((sum, o) => sum + o.weight, 0);
+            let r = Math.random() * totalWeight;
+            for (const o of ORIGINS) {
+                if (r < o.weight) return o;
+                r -= o.weight;
+            }
+            return ORIGINS[0];
+        }
+
+        function clamp(val, min = 0, max = 100) {
+            return Math.max(min, Math.min(max, Math.round(val)));
+        }
+
+        /**
+         * 開始新的人生
+         */
+        function startLife(selectedOriginId) {
+            const origin = selectedOriginId 
+                ? ORIGINS.find(o => o.id === selectedOriginId) 
+                : pickWeightedOrigin();
+
+            const jitter = () => Math.floor(Math.random() * 7) - 3;
+
+            state = {
+                origin: origin,
+                ageStepIndex: -1,
+                age: 0,
+                stats: {
+                    health: clamp(origin.stats.health + jitter(), 15, 95),
+                    cash: clamp(origin.stats.cash + jitter(), 10, 95),
+                    skill: clamp(origin.stats.skill + jitter(), 15, 95),
+                    luck: clamp(origin.stats.luck + jitter(), 15, 95)
+                },
+                flags: new Set(),
+                logs: [`0 歲：出生在「${origin.name}」`],
+                badges: new Set(),
+                isDead: false,
+                deathReason: '',
+                questionCount: 0,
+                accidentCount: 0
+            };
+
+            // 切換畫面
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('summary-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('hidden');
+
+            // 設定頂部身分資訊
+            document.getElementById('ui-region-flag').textContent = origin.flag;
+            document.getElementById('ui-region-name').textContent = origin.name;
+            renderHeaderTags();
+            updateStatsUI();
+
+            // 清空時間軸並插入 0 歲出生卡
+            const timeline = document.getElementById('timeline-container');
+            timeline.innerHTML = '';
+
+            appendBirthCard(origin);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderHeaderTags() {
+            const container = document.getElementById('ui-active-tags');
+            container.innerHTML = '';
+
+            state.origin.traits.forEach(t => {
+                const span = document.createElement('span');
+                span.className = `text-[10px] font-bold px-1.5 py-0.2 rounded ${
+                    t.type === 'buff' 
+                    ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' 
+                    : 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300'
+                }`;
+                span.textContent = t.text;
+                container.appendChild(span);
+            });
+
+            // 顯示關鍵劇情狀態標籤
+            const flagMap = {
+                'abroad': '✈️ 海外漂泊中',
+                'mortgage_slave': '🏠 40年房貸',
+                'has_kid': '👶 有小孩',
+                'chronic_pain': '🩹 舊傷隱患'
+            };
+            state.flags.forEach(f => {
+                if (flagMap[f]) {
+                    const span = document.createElement('span');
+                    span.className = 'text-[10px] font-bold px-1.5 py-0.2 rounded bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300';
+                    span.textContent = flagMap[f];
+                    container.appendChild(span);
+                }
+            });
+        }
+
+        /**
+         * 插入 0 歲出生卡片與「開始長大」按鈕
+         */
+        function appendBirthCard(origin) {
+            const timeline = document.getElementById('timeline-container');
+            const card = document.createElement('div');
+            card.className = 'bg-white dark:bg-zinc-900 p-5 sm:p-6 rounded-3xl border border-gray-200 dark:border-zinc-800 card-shadow animate-slide-up';
+
+            const traitsHtml = origin.traits.map(t => `
+                <span class="inline-flex items-center px-2.5 py-1 rounded-xl text-xs font-bold ${
+                    t.type === 'buff' 
+                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800' 
+                    : 'bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-800'
+                }">${t.text}</span>
+            `).join('');
+
+            card.innerHTML = `
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-xs font-black px-2.5 py-1 rounded-full bg-gray-900 dark:bg-zinc-100 text-white dark:text-zinc-900">0 歲 • 投胎落地</span>
+                    <span class="text-xs font-bold text-gray-400">${origin.probText}</span>
+                </div>
+                <h2 class="text-lg sm:text-xl font-black mb-2">哇的一聲，你出生在「${origin.flag} ${origin.name}」</h2>
+                <p class="text-sm sm:text-[15px] text-gray-600 dark:text-zinc-300 leading-relaxed mb-4">${origin.desc}</p>
+                <div class="flex flex-wrap gap-2 mb-5">
+                    ${traitsHtml}
+                </div>
+                <button id="btn-start-grow" onclick="proceedToNextStage(this)" class="w-full py-3.5 px-5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm sm:text-base shadow-md transition-all cursor-pointer flex items-center justify-center gap-2">
+                    <span>👶 開始長大（前往 3 歲）</span>
+                    <span>→</span>
+                </button>
+            `;
+            timeline.appendChild(card);
+        }
+
+        /**
+         * 核心推進函式：決定下一階段是先觸發「突發意外」還是直接進入「人生抉擇問題」
+         */
+        function proceedToNextStage(triggerBtn) {
+            if (triggerBtn) {
+                triggerBtn.disabled = true;
+                triggerBtn.classList.add('opacity-50', 'pointer-events-none');
+            }
+            if (state.isDead) return;
+
+            state.ageStepIndex++;
+            if (state.ageStepIndex >= AGE_TIMELINE.length) {
+                endLife('百歲人瑞奇蹟！你在子孫與眾人的祝福中安詳閉上眼睛，走完了傳奇的一生。');
+                return;
+            }
+
+            const prevAge = state.age;
+            state.age = AGE_TIMELINE[state.ageStepIndex];
+            updateStatsUI();
+
+            // 自然衰老扣血機制 (52歲後健康自然微幅下滑)
+            if (state.age >= 52) {
+                const decay = state.age >= 68 ? -6 : -3;
+                applyStatChanges({ health: decay }, false);
+                if (checkDeathCondition()) return;
+            }
+
+            // 房貸壓力扣錢機制
+            if (state.flags.has('mortgage_slave') && state.age >= 30 && state.age <= 65) {
+                applyStatChanges({ cash: -4 }, false);
+            }
+
+            // 60% 機率在進入該年齡問題前，先砸下一顆「高影響力突發意外事件」！
+            const accidentRoll = Math.random();
+            if (state.age >= 6 && accidentRoll < 0.60) {
+                const accident = triggerSuddenAccident();
+                if (accident) {
+                    state.accidentCount++;
+                    renderAccidentCard(accident);
+                    return;
+                }
+            }
+
+            // 否則直接進入該年齡層的「多選項人生抉擇問題」
+            renderQuestionCard();
+        }
+
+        /**
+         * 渲染突發意外事件卡片
+         */
+        function renderAccidentCard(accident) {
+            const timeline = document.getElementById('timeline-container');
+            const card = document.createElement('div');
+
+            // 依據意外類型決定配色（黑色悲劇 / 金色奇蹟 / 白色轉折）
+            let styleClass = 'bg-white dark:bg-zinc-900 border-gray-300 dark:border-zinc-700';
+            let badgeStyle = 'bg-gray-800 text-white';
+            let badgeText = '🎲 生活突發轉折';
+
+            if (accident.type === 'tragedy') {
+                styleClass = 'bg-zinc-900 text-white border-rose-500/70 shadow-xl shadow-rose-950/20';
+                badgeStyle = 'bg-rose-600 text-white';
+                badgeText = '⚠️ 突發意外衝擊';
+            } else if (accident.type === 'miracle') {
+                styleClass = 'bg-amber-50 dark:bg-amber-950/40 border-amber-400 dark:border-amber-600 shadow-lg shadow-amber-500/10';
+                badgeStyle = 'bg-amber-500 text-white';
+                badgeText = '✨ 天降奇蹟好運';
+            }
+
+            card.className = `p-5 sm:p-6 rounded-3xl border-2 card-shadow animate-pop-in ${styleClass}`;
+
+            // 情況 A：純事件型意外（直接套用屬性變化 + 繼續按鈕）
+            if (!accident.hasEmergencyChoices) {
+                applyStatChanges(accident.effect, true);
+                if (accident.badge) state.badges.add(accident.badge);
+                state.logs.push(`${state.age} 歲【意外】：${accident.title.replace(/^.*?：/, '')}`);
+
+                const pillsHtml = buildEffectPillsHtml(accident.effect, accident.type === 'tragedy');
+
+                card.innerHTML = `
+                    <div class="flex items-center justify-between mb-2.5">
+                        <span class="text-xs font-black px-2.5 py-1 rounded-full ${badgeStyle}">${state.age} 歲 • ${badgeText}</span>
+                    </div>
+                    <h3 class="text-base sm:text-lg font-black mb-2">${accident.title}</h3>
+                    <p class="text-sm leading-relaxed opacity-90 mb-2">${accident.text}</p>
+                    <p class="text-sm font-bold leading-relaxed mb-3 ${accident.type === 'tragedy' ? 'text-rose-300' : 'text-blue-600 dark:text-blue-400'}">${accident.result}</p>
+                    ${pillsHtml}
+                    <div class="mt-4 pt-3 border-t ${accident.type === 'tragedy' ? 'border-zinc-800' : 'border-gray-200/70 dark:border-zinc-800'}">
+                        <button onclick="afterAccidentContinue(this)" class="w-full py-3 px-4 rounded-xl ${accident.type === 'tragedy' ? 'bg-white text-zinc-900 hover:bg-gray-200' : 'bg-gray-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:opacity-90'} font-bold text-sm transition-all cursor-pointer">
+                            繼續面對 ${state.age} 歲的人生抉擇 →
+                        </button>
+                    </div>
+                `;
+                timeline.appendChild(card);
+                scrollToBottom();
+                return;
+            }
+
+            // 情況 B：需要臨場反應選項的突發意外！
+            let choicesHtml = '';
+            accident.choices.forEach((c, idx) => {
+                let isLocked = false;
+                let lockText = '';
+
+                if (c.reqCondition && !c.reqCondition()) {
+                    isLocked = true;
+                    lockText = c.reqText || '條件不符';
+                } else if (c.req && state.stats[c.req.stat] < c.req.min) {
+                    isLocked = true;
+                    const statNames = { health: '健康', cash: '現金', skill: '技能', luck: '運氣' };
+                    lockText = `需${statNames[c.req.stat]} ≥ ${c.req.min}`;
+                }
+
+                choicesHtml += `
+                    <button ${isLocked ? 'disabled' : ''} data-choice-idx="${idx}" class="accident-choice-btn choice-btn w-full text-left p-3.5 rounded-2xl border transition-all ${
+                        isLocked
+                        ? 'opacity-45 cursor-not-allowed border-gray-500/30 bg-black/10'
+                        : accident.type === 'tragedy'
+                            ? 'bg-zinc-800/90 hover:bg-zinc-800 border-zinc-700 hover:border-rose-400 cursor-pointer'
+                            : 'bg-white dark:bg-zinc-800 hover:bg-blue-50 dark:hover:bg-zinc-700/80 border-gray-200 dark:border-zinc-700 hover:border-blue-500 cursor-pointer'
+                    }">
+                        <div class="flex items-center justify-between gap-2 mb-1">
+                            <span class="font-bold text-xs sm:text-sm">${c.label}</span>
+                            ${isLocked ? `<span class="text-[10px] font-bold px-2 py-0.5 rounded bg-rose-500/20 text-rose-400 shrink-0">🔒 ${lockText}</span>` : ''}
+                        </div>
+                        <div class="text-[11px] opacity-75">${c.hint}</div>
+                    </button>
+                `;
+            });
+
+            card.innerHTML = `
+                <div class="flex items-center justify-between mb-2.5">
+                    <span class="text-xs font-black px-2.5 py-1 rounded-full ${badgeStyle}">${state.age} 歲 • ${badgeText}</span>
+                </div>
+                <h3 class="text-base sm:text-lg font-black mb-2">${accident.title}</h3>
+                <p class="text-sm leading-relaxed opacity-90 mb-4">${accident.text}</p>
+                <div class="space-y-2" id="accident-choices-box">
+                    ${choicesHtml}
+                </div>
+                <div class="accident-result-box hidden mt-4 pt-3 border-t border-gray-500/20"></div>
+            `;
+
+            timeline.appendChild(card);
+
+            // 綁定意外選項點擊事件
+            const btns = card.querySelectorAll('.accident-choice-btn:not([disabled])');
+            btns.forEach(btn => {
+                btn.onclick = () => {
+                    const idx = parseInt(btn.getAttribute('data-choice-idx'));
+                    const chosen = accident.choices[idx];
+
+                    // 鎖定所有選項並高亮選中項
+                    card.querySelectorAll('.accident-choice-btn').forEach(b => {
+                        b.disabled = true;
+                        if (b !== btn) b.classList.add('opacity-35');
+                        else b.classList.add('ring-2', 'ring-blue-500');
+                    });
+
+                    applyStatChanges(chosen.effect, true);
+                    if (chosen.badge) state.badges.add(chosen.badge);
+                    if (chosen.addFlag) {
+                        state.flags.add(chosen.addFlag);
+                        renderHeaderTags();
+                    }
+                    state.logs.push(`${state.age} 歲【突發應對】：${chosen.label.replace(/^.*?\s/, '')}`);
+
+                    const resBox = card.querySelector('.accident-result-box');
+                    resBox.classList.remove('hidden');
+                    resBox.innerHTML = `
+                        <p class="text-sm font-bold mb-2 ${accident.type === 'tragedy' ? 'text-rose-300' : 'text-blue-600 dark:text-blue-400'}">${chosen.result}</p>
+                        ${buildEffectPillsHtml(chosen.effect, accident.type === 'tragedy')}
+                        <button onclick="afterAccidentContinue(this)" class="mt-3 w-full py-3 px-4 rounded-xl ${accident.type === 'tragedy' ? 'bg-white text-zinc-900' : 'bg-gray-900 dark:bg-zinc-100 text-white dark:text-zinc-900'} font-bold text-sm transition-all cursor-pointer">
+                            繼續面對 ${state.age} 歲的人生抉擇 →
+                        </button>
+                    `;
+                    scrollToBottom();
+                };
+            });
+
+            scrollToBottom();
+        }
+
+        function afterAccidentContinue(btn) {
+            btn.disabled = true;
+            btn.classList.add('opacity-50');
+            if (checkDeathCondition()) return;
+            renderQuestionCard();
+        }
+
+        /**
+         * 渲染該年齡階段的多選項人生抉擇問題卡片
+         */
+        function renderQuestionCard() {
+            state.questionCount++;
+            const q = getQuestionForAge(state.age);
+            const timeline = document.getElementById('timeline-container');
+            const card = document.createElement('div');
+
+            card.className = 'bg-white dark:bg-zinc-900 p-5 sm:p-6 rounded-3xl border border-gray-200 dark:border-zinc-800 card-shadow animate-slide-up';
+
+            let choicesHtml = '';
+            q.choices.forEach((c, idx) => {
+                let isLocked = false;
+                let lockReason = '';
+                if (c.req && state.stats[c.req.stat] < c.req.min) {
+                    isLocked = true;
+                    const statNames = { health: '健康', cash: '現金', skill: '技能', luck: '運氣' };
+                    lockReason = `需${statNames[c.req.stat]} ≥ ${c.req.min} (目前 ${state.stats[c.req.stat]})`;
+                }
+
+                choicesHtml += `
+                    <button ${isLocked ? 'disabled' : ''} data-q-idx="${idx}" class="q-choice-btn choice-btn w-full text-left p-3.5 rounded-2xl border transition-all ${
+                        isLocked
+                        ? 'bg-gray-100/70 dark:bg-zinc-800/40 border-gray-200 dark:border-zinc-800 opacity-50 cursor-not-allowed'
+                        : 'bg-gray-50/80 dark:bg-zinc-800/70 hover:bg-blue-50/70 dark:hover:bg-blue-950/30 border-gray-200 dark:border-zinc-700 hover:border-blue-500 cursor-pointer'
+                    }">
+                        <div class="flex items-start justify-between gap-2 mb-1">
+                            <span class="font-bold text-xs sm:text-sm leading-snug">${c.label}</span>
+                            ${isLocked ? `<span class="text-[10px] font-bold px-2 py-0.5 rounded bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300 shrink-0">🔒 ${lockReason}</span>` : ''}
+                        </div>
+                        <div class="text-[11px] text-gray-500 dark:text-zinc-400">${c.hint}</div>
+                    </button>
+                `;
+            });
+
+            card.innerHTML = `
+                <div class="flex items-center justify-between mb-2.5">
+                    <span class="text-xs font-black px-2.5 py-1 rounded-full ${q.badgeColor}">${state.age} 歲 • ${q.badge}</span>
+                    <span class="text-xs font-mono text-gray-400">第 ${state.questionCount} 個抉擇</span>
+                </div>
+                <h3 class="text-base sm:text-lg font-black mb-2 leading-snug">${q.title}</h3>
+                <p class="text-sm text-gray-600 dark:text-zinc-300 leading-relaxed mb-4">${q.text}</p>
+                <div class="space-y-2.5">
+                    ${choicesHtml}
+                </div>
+                <div class="q-outcome-box hidden mt-4 pt-4 border-t border-gray-200/80 dark:border-zinc-800"></div>
+            `;
+
+            timeline.appendChild(card);
+
+            // 綁定選項事件
+            const btns = card.querySelectorAll('.q-choice-btn:not([disabled])');
+            btns.forEach(btn => {
+                btn.onclick = () => {
+                    const idx = parseInt(btn.getAttribute('data-q-idx'));
+                    const chosen = q.choices[idx];
+
+                    // 鎖定選項
+                    card.querySelectorAll('.q-choice-btn').forEach(b => {
+                        b.disabled = true;
+                        if (b !== btn) b.classList.add('opacity-35');
+                        else {
+                            b.classList.remove('bg-gray-50/80', 'dark:bg-zinc-800/70');
+                            b.classList.add('bg-blue-50', 'dark:bg-blue-950/40', 'border-blue-500', 'ring-2', 'ring-blue-500/30');
+                        }
+                    });
+
+                    let finalEffect = { ...(chosen.effect || {}) };
+                    let finalResultText = chosen.result;
+
+                    // 處理高風險賭注型選項
+                    if (chosen.isGamble) {
+                        const winProb = 0.42 + (state.stats.luck - 50) * 0.004 + (state.stats.skill - 50) * 0.003;
+                        if (Math.random() < winProb) {
+                            finalEffect = { cash: 32, luck: 14, skill: 8, health: -6 };
+                            finalResultText += ' 🎉 老天爺賞飯吃！你居然真的押對寶了，資產直接翻了好幾倍，身邊所有人下巴都掉下來！';
+                            state.badges.add('天選賭神');
+                            state.logs.push(`${state.age} 歲：大膽押注大獲全勝，實現階層躍遷！`);
+                        } else {
+                            finalEffect = { cash: -28, luck: -12, health: -10 };
+                            finalResultText += ' 💸 慘烈翻車！市場風向一夜反轉，你賠光了大半積蓄，每天晚上看著帳單睡不著覺。';
+                            state.badges.add('悲情接盤俠');
+                            state.logs.push(`${state.age} 歲：高風險投資慘賠，荷包大失血。`);
+                        }
+                    } else {
+                        state.logs.push(`${state.age} 歲：${chosen.label.replace(/^.*?\s/, '').slice(0, 22)}...`);
+                    }
+
+                    if (chosen.badge) state.badges.add(chosen.badge);
+                    if (chosen.addFlag) {
+                        state.flags.add(chosen.addFlag);
+                        renderHeaderTags();
+                    }
+
+                    applyStatChanges(finalEffect, true);
+
+                    const nextAge = AGE_TIMELINE[state.ageStepIndex + 1];
+                    const nextBtnText = nextAge ? `繼續長大（前往 ${nextAge} 歲）→` : '迎向人生百歲終章 →';
+
+                    const outcomeBox = card.querySelector('.q-outcome-box');
+                    outcomeBox.classList.remove('hidden');
+                    outcomeBox.innerHTML = `
+                        <p class="text-sm font-bold text-gray-900 dark:text-zinc-100 leading-relaxed mb-2.5">${finalResultText}</p>
+                        ${buildEffectPillsHtml(finalEffect, false)}
+                        <button onclick="afterQuestionContinue(this)" class="mt-4 w-full py-3.5 px-5 rounded-2xl bg-gray-900 dark:bg-zinc-100 hover:opacity-90 text-white dark:text-zinc-900 font-bold text-sm transition-all cursor-pointer">
+                            ${nextBtnText}
+                        </button>
+                    `;
+
+                    scrollToBottom();
+                };
+            });
+
+            scrollToBottom();
+        }
+
+        function afterQuestionContinue(btn) {
+            if (checkDeathCondition()) return;
+            proceedToNextStage(btn);
+        }
+
+        /**
+         * 屬性變動與浮動數字特效
+         */
+        function applyStatChanges(effect, showFloating = true) {
+            if (!effect) return;
+            const keys = ['health', 'cash', 'skill', 'luck'];
+            keys.forEach(k => {
+                if (effect[k]) {
+                    const delta = effect[k];
+                    state.stats[k] = clamp(state.stats[k] + delta);
+
+                    if (showFloating) {
+                        const el = document.getElementById(`delta-${k}`);
+                        el.textContent = delta > 0 ? `+${delta}` : `${delta}`;
+                        el.className = `absolute -top-2 right-1 text-xs font-black pointer-events-none animate-float-up ${
+                            delta > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'
+                        }`;
+                        el.style.animation = 'none';
+                        el.offsetHeight;
+                        el.style.animation = null;
+                    }
+                }
+            });
+            updateStatsUI();
+        }
+
+        function updateStatsUI() {
+            document.getElementById('ui-age').textContent = state.age;
+            ['health', 'cash', 'skill', 'luck'].forEach(k => {
+                document.getElementById(`stat-${k}-val`).textContent = state.stats[k];
+                document.getElementById(`stat-${k}-bar`).style.width = `${state.stats[k]}%`;
+            });
+        }
+
+        function buildEffectPillsHtml(effect, isDarkCard) {
+            if (!effect) return '';
+            const map = {
+                health: { label: '健康', icon: '❤️' },
+                cash: { label: '現金', icon: '💰' },
+                skill: { label: '技能', icon: '🧠' },
+                luck: { label: '運氣', icon: '🍀' }
+            };
+            const pills = Object.entries(effect)
+                .filter(([_, val]) => val !== 0)
+                .map(([k, val]) => {
+                    const isPos = val > 0;
+                    const colorClass = isDarkCard
+                        ? (isPos ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : 'bg-rose-500/20 text-rose-300 border-rose-500/40')
+                        : (isPos ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800' : 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-800');
+                    return `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-bold border ${colorClass}">${map[k].icon} ${map[k].label} ${isPos ? '+' + val : val}</span>`;
+                });
+            return pills.length > 0 ? `<div class="flex flex-wrap gap-1.5">${pills.join('')}</div>` : '';
+        }
+
+        /**
+         * 檢查死亡與壽終條件
+         */
+        function checkDeathCondition() {
+            // 1. 身體健康歸零 -> 中途提前登出
+            if (state.stats.health <= 0) {
+                const earlyDeaths = [
+                    `在 ${state.age} 歲那年，因為長期過勞加上健康徹底透支，你在睡夢中心臟驟停，提早登出了地球 Online。`,
+                    `在 ${state.age} 歲那年，一場突如其來的重症壓垮了早已亮紅燈的身體，你在醫院病床上結束了這一生。`
+                ];
+                endLife(earlyDeaths[Math.floor(Math.random() * earlyDeaths.length)]);
+                return true;
+            }
+
+            // 2. 高齡自然死亡檢定 (68 歲以上開始有自然老化風險)
+            if (state.age >= 68) {
+                const surviveChance = (state.stats.health / 100) * 0.88 - ((state.age - 68) * 0.025);
+                if (Math.random() > surviveChance) {
+                    const naturalDeaths = [
+                        `在 ${state.age} 歲某個陽光溫暖的午後，你一邊追劇一邊在沙發上安詳睡去，臉上還帶著微笑。`,
+                        `活到了 ${state.age} 歲，你在家人的陪伴下平靜地閉上眼睛，這趟地球旅程已經非常圓滿。`
+                    ];
+                    endLife(naturalDeaths[Math.floor(Math.random() * naturalDeaths.length)]);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /**
+         * 結束這輩子並生成超白話「這輩子成績單」
+         */
+        function endLife(reason) {
+            state.isDead = true;
+            state.deathReason = reason;
+
+            // 在時間軸最後插入終章提示卡
+            const timeline = document.getElementById('timeline-container');
+            const endCard = document.createElement('div');
+            endCard.className = 'bg-gray-900 dark:bg-zinc-100 text-white dark:text-zinc-900 p-6 rounded-3xl shadow-2xl animate-pop-in text-center';
+            endCard.innerHTML = `
+                <div class="text-3xl mb-2">🕊️</div>
+                <div class="text-xs font-bold uppercase tracking-widest opacity-70 mb-1">LIFE ARCHIVED • 人生已存檔</div>
+                <h3 class="text-xl sm:text-2xl font-black mb-2">享年 ${state.age} 歲</h3>
+                <p class="text-sm opacity-90 mb-5 leading-relaxed">${reason}</p>
+                <button onclick="showSummaryScreen()" class="w-full py-3.5 px-6 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-base shadow-lg transition-all cursor-pointer">
+                    🧾 領取我的「這輩子成績單」→
+                </button>
+            `;
+            timeline.appendChild(endCard);
+            scrollToBottom();
+        }
+
+        function showSummaryScreen() {
+            document.getElementById('game-screen').classList.add('hidden');
+            document.getElementById('summary-screen').classList.remove('hidden');
+
+            const { age, origin, stats, deathReason, badges, logs, flags } = state;
+
+            document.getElementById('sum-id').textContent = `#EARTH-${Math.floor(1000 + Math.random() * 9000)}`;
+            document.getElementById('sum-headline').textContent = `享年 ${age} 歲`;
+            document.getElementById('sum-origin-line').textContent = `${origin.flag} 投胎開局：${origin.name}`;
+            document.getElementById('sum-death-reason').textContent = deathReason;
+
+            // 根據最終數值補發趣味稱號徽章
+            if (stats.cash >= 80) badges.add('💰 財富自由大佬');
+            if (stats.cash <= 15) badges.add('💸 月底吃土專家');
+            if (stats.health >= 80) badges.add('💪 百毒不侵鐵人');
+            if (stats.skill >= 80) badges.add('🧠 時代大腦擔當');
+            if (stats.luck >= 80) badges.add('🍀 走路撿到錢歐皇');
+            if (age < 40) badges.add('⚡ 流星般短暫過客');
+            if (age >= 80) badges.add('🐢 地球長壽見證者');
+            if (badges.size === 0) badges.add('🙂 平凡而真實的地球人');
+
+            const badgeContainer = document.getElementById('sum-badges');
+            badgeContainer.innerHTML = '';
+            badges.forEach(b => {
+                const span = document.createElement('span');
+                span.className = 'px-3 py-1.5 rounded-xl bg-amber-100/80 dark:bg-amber-950/60 text-amber-900 dark:text-amber-300 border border-amber-300/70 dark:border-amber-800 text-xs sm:text-sm font-black';
+                span.textContent = b;
+                badgeContainer.appendChild(span);
+            });
+
+            // 自動組合一段白話人生故事總結
+            let storyParts = [];
+            storyParts.push(`這輩子你抽中了「${origin.name}」的劇本，經歷了 ${state.questionCount} 次人生十字路口與 ${state.accidentCount} 次突發意外。`);
+
+            if (origin.stats.cash <= 25 && stats.cash >= 65) {
+                storyParts.push('雖然開局手牌極爛、資源匱乏，但你硬是靠著超強韌性一路逆襲翻身，活出了讓所有人刮目相看的精彩人生！');
+            } else if (stats.cash >= 75 && stats.health <= 30) {
+                storyParts.push('你這輩子賺到了花不完的錢，銀行帳戶數字超漂亮，可惜前半生太拚命把身體操壞了，晚年都在醫院跟健康搏鬥。');
+            } else if (flags.has('abroad')) {
+                storyParts.push('你選擇離開熟悉的家鄉去海外闖蕩，見識了廣闊的世界，雖然偶爾會想家，但這趟遠行徹底改變了你的命運。');
+            } else if (flags.has('mortgage_slave')) {
+                storyParts.push('你為了擁有一個屬於自己的家，咬牙扛下了幾十年的房貸重擔，雖然每個月看帳單都在嘆氣，但至少有瓦遮頭。');
+            } else if (stats.luck >= 70 && stats.health >= 65) {
+                storyParts.push('你沒有被世俗的焦慮綁架，懂得享受生活、廣結善緣，身體健康又心態樂觀，堪稱地球上活得最舒坦的一群人！');
+            } else {
+                storyParts.push('就像世界上絕大多數普通人一樣，你經歷過加班的無奈、荷包縮水的焦慮，也擁有過平凡溫暖的小確幸，扎扎實實地活過了一回。');
+            }
+
+            document.getElementById('sum-story').textContent = storyParts.join('');
+
+            // 填入最終數值
+            document.getElementById('sum-stat-health').textContent = stats.health;
+            document.getElementById('sum-stat-cash').textContent = stats.cash;
+            document.getElementById('sum-stat-skill').textContent = stats.skill;
+            document.getElementById('sum-stat-luck').textContent = stats.luck;
+
+            // 填入關鍵紀錄
+            const logsEl = document.getElementById('sum-logs');
+            logsEl.innerHTML = '';
+            logs.slice(0, 8).forEach(l => {
+                const li = document.createElement('li');
+                li.textContent = l;
+                logsEl.appendChild(li);
+            });
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function scrollToBottom() {
+            setTimeout(() => {
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            }, 80);
+        }
+
+        /**
+         * 主題切換、確認重開與複製戰績
+         */
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            const icon = isDark ? '☀️' : '🌙';
+            document.getElementById('theme-icon').textContent = icon;
+            document.getElementById('theme-icon-game').textContent = icon;
+        }
+
+        function confirmRestart() {
+            document.getElementById('restart-modal').classList.remove('hidden');
+        }
+
+        function closeRestartModal() {
+            document.getElementById('restart-modal').classList.add('hidden');
+        }
+
+        function executeRestart() {
+            closeRestartModal();
+            returnToLobby();
+        }
+
+        function returnToLobby() {
+            document.getElementById('game-screen').classList.add('hidden');
+            document.getElementById('summary-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function copyResultSummary() {
+            const badgesStr = Array.from(state.badges).join('、');
+            const shareText = `🌍【現代地球人生分支模擬器】\n我這輩子投胎到了「${state.origin.flag} ${state.origin.name}」\n享年 ${state.age} 歲！\n獲得稱號：【${badgesStr}】\n💀 結局：${state.deathReason}\n來測測看你隨機投胎會遇到什麼地獄難題吧！`;
+
+            const textArea = document.createElement('textarea');
+            textArea.value = shareText;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-9999px';
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showToast('✅ 已複製戰績！快貼給朋友比比看誰比較慘（或比較歐）');
+            } catch (e) {
+                showToast('⚠️ 複製失敗，請直接截圖分享吧！');
+            }
+            document.body.removeChild(textArea);
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.remove('opacity-0');
+            setTimeout(() => {
+                toast.classList.add('opacity-0');
+            }, 2600);
+        }
+
+        // 初始化大廳選項
+        window.onload = function() {
+            initLobby();
+        };
+    </script>
+</body>
+</html>
